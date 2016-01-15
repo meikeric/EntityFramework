@@ -396,6 +396,43 @@ namespace Microsoft.Data.Entity.Query
                 outerJoin: true);
         }
 
+        private class NullCheckRemovingVisitor : ExpressionVisitorBase
+        {
+            protected override Expression VisitConditional(ConditionalExpression node)
+            {
+                var binaryTest = node.Test as BinaryExpression;
+                if (binaryTest == null || binaryTest.NodeType != ExpressionType.NotEqual)
+                {
+                    return node;
+                }
+
+                var rightConstant = binaryTest.Right as ConstantExpression;
+                if (rightConstant == null || rightConstant.Value != null)
+                {
+                    return node;
+                }
+
+                var ifFalseConstant = node.IfFalse as ConstantExpression;
+                if (ifFalseConstant == null || ifFalseConstant.Value != null)
+                {
+                    return node;
+                }
+
+                var ifTrueMemberExpression = node.IfTrue.RemoveConvert() as MemberExpression;
+                var correctMemberExpression = ifTrueMemberExpression != null
+                     && ifTrueMemberExpression.Member.Name == "Property"
+                     && ifTrueMemberExpression.Expression == binaryTest.Left;
+
+                var ifTruePropertyMethodCallExpression = node.IfTrue.RemoveConvert() as MethodCallExpression;
+                var correctPropertyMethodCallExpression = ifTruePropertyMethodCallExpression != null
+                     && ifTruePropertyMethodCallExpression.Method.Name == "Property"
+                     && ifTruePropertyMethodCallExpression.Arguments[0] == binaryTest.Left;
+
+                return correctMemberExpression || correctPropertyMethodCallExpression ? node.IfTrue : node;
+            }
+        }
+
+
         protected virtual void OptimizeJoinClause(
             [NotNull] JoinClause joinClause,
             [NotNull] QueryModel queryModel,
@@ -432,11 +469,13 @@ namespace Microsoft.Data.Entity.Query
                     var sqlTranslatingExpressionVisitor
                         = _sqlTranslatingExpressionVisitorFactory.Create(this);
 
+                    var nullCheckRemovingVisitor = new NullCheckRemovingVisitor();
+
                     var predicate
                         = sqlTranslatingExpressionVisitor
                             .Visit(
                                 Expression.Equal(
-                                    joinClause.OuterKeySelector,
+                                    nullCheckRemovingVisitor.Visit(joinClause.OuterKeySelector),
                                     joinClause.InnerKeySelector));
 
                     if (predicate != null)

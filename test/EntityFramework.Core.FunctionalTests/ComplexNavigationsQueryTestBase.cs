@@ -748,7 +748,7 @@ namespace Microsoft.Data.Entity.FunctionalTests
         }
 
         // issue #3186
-        ////[ConditionalFact]
+        [ConditionalFact]
         public virtual void Select_nav_prop_reference_optional1()
         {
             List<string> expected;
@@ -810,23 +810,23 @@ namespace Microsoft.Data.Entity.FunctionalTests
         }
 
         // issue #3186
-        ////[ConditionalFact]
+        [ConditionalFact]
         public virtual void Select_nav_prop_reference_optional2()
         {
-            List<int> expected;
+            List<int?> expected;
             using (var context = CreateContext())
             {
                 expected = context.LevelOne
                     .Include(e => e.OneToOne_Optional_FK)
                     .ToList()
-                    .Select(e => e.OneToOne_Optional_FK.Id).ToList();
+                    .Select(e => e.OneToOne_Optional_FK?.Id).ToList();
             }
 
             ClearLog();
 
             using (var context = CreateContext())
             {
-                var query = context.LevelOne.Select(e => e.OneToOne_Optional_FK.Id);
+                var query = context.LevelOne.Select(e => (int?)e.OneToOne_Optional_FK.Id);
                 var result = query.ToList();
 
                 Assert.Equal(expected.Count, result.Count);
@@ -872,7 +872,70 @@ namespace Microsoft.Data.Entity.FunctionalTests
         }
 
         // issue #3186
-        ////[ConditionalFact]
+        [ConditionalFact]
+        public virtual void Select_multiple_nav_prop_reference_optional()
+        {
+            List<int?> expected;
+            using (var context = CreateContext())
+            {
+                expected = context.LevelOne
+                    .Include(e => e.OneToOne_Optional_FK.OneToOne_Optional_FK)
+                    .ToList()
+                    .Select(e => e.OneToOne_Optional_FK?.OneToOne_Optional_FK?.Id).ToList();
+            }
+
+            ClearLog();
+
+            using (var context = CreateContext())
+            {
+                var query = context.LevelOne.Select(e => (int?)e.OneToOne_Optional_FK.OneToOne_Optional_FK.Id);
+                var result = query.ToList();
+
+                Assert.Equal(expected.Count, result.Count);
+                for (var i = 0; i < result.Count; i++)
+                {
+                    Assert.True(expected.Contains(result[i]));
+                }
+            }
+        }
+
+        [ConditionalFact]
+        public virtual void Select_multiple_nav_prop_reference_optional_via_DefaultIfEmpty()
+        {
+            using (var context = CreateContext())
+            {
+                var query = from l1 in context.LevelOne
+                            join l2 in context.LevelTwo on l1.Id equals l2.Level1_Optional_Id into groupJoin1
+                            from l2 in groupJoin1.DefaultIfEmpty()
+                            join l3 in context.LevelThree on (l2 == null ? (int?)null : l2.Id) equals l3.Level2_Optional_Id into groupJoin2
+                            from l3 in groupJoin2.DefaultIfEmpty()
+                            select new { Id1 = l1.Id, Id2 = l2 == null ? null : (int?)l2.Id, Id3 = l3 == null ? null : (int?)l3.Id };
+
+                var result = query.ToList();
+
+                //Assert.Equal(expected.Count, result.Count);
+                //for (var i = 0; i < result.Count; i++)
+                //{
+                //    Assert.True(expected.Contains(result[i]));
+                //}
+            }
+        }
+
+        //[ConditionalFact]
+        //public virtual void Select_multiple_nav_prop_reference_optional_via_SelectMany()
+        //{
+        //    using (var context = CreateContext())
+        //    {
+        //        var query = from l1 in context.LevelOne
+        //                    from l2 in context.LevelTwo.Where(e => l1 != null && l1.Id == e.Level1_Optional_Id).DefaultIfEmpty()
+        //                    select new { Id1 = l1.Id, Id2 = l2.Id };
+
+        //        var result = query.ToList();
+        //    }
+        //}
+
+        // issue #3186
+        [ConditionalFact]
         public virtual void Where_nav_prop_reference_optional1()
         {
             List<int> expected;

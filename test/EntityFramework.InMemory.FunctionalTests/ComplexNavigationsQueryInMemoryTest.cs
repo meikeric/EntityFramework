@@ -11,5 +11,10 @@ namespace Microsoft.Data.Entity.InMemory.FunctionalTests
             : base(fixture)
         {
         }
+
+        public override void Select_multiple_nav_prop_reference_optional_via_DefaultIfEmpty()
+        {
+            base.Select_multiple_nav_prop_reference_optional_via_DefaultIfEmpty();
+        }
     }
 }
