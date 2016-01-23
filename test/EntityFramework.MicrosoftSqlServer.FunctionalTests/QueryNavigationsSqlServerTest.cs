@@ -13,6 +13,7 @@ namespace Microsoft.Data.Entity.SqlServer.FunctionalTests
         {
             base.Select_Where_Navigation();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.Equal(
                 @"SELECT [o].[OrderID], [o].[CustomerID], [o].[EmployeeID], [o].[OrderDate]
 FROM [Orders] AS [o]
@@ -25,6 +26,7 @@ WHERE [o.Customer].[City] = 'Seattle'",
         {
             base.Select_Where_Navigation_Deep();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.StartsWith(
                 @"@__p_0: 1
 
@@ -53,6 +55,7 @@ WHERE [o.Customer].[City] = 'Seattle'",
         {
             base.Select_Navigation();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.StartsWith(
                 @"SELECT [o.Customer].[CustomerID], [o.Customer].[Address], [o.Customer].[City], [o.Customer].[CompanyName], [o.Customer].[ContactName], [o.Customer].[ContactTitle], [o.Customer].[Country], [o.Customer].[Fax], [o.Customer].[Phone], [o.Customer].[PostalCode], [o.Customer].[Region]
 FROM [Orders] AS [o]
@@ -64,6 +67,7 @@ INNER JOIN [Customers] AS [o.Customer] ON [o].[CustomerID] = [o.Customer].[Custo
         {
             base.Select_Navigations();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.Equal(
                 @"SELECT [o.Customer].[CustomerID], [o.Customer].[Address], [o.Customer].[City], [o.Customer].[CompanyName], [o.Customer].[ContactName], [o.Customer].[ContactTitle], [o.Customer].[Country], [o.Customer].[Fax], [o.Customer].[Phone], [o.Customer].[PostalCode], [o.Customer].[Region]
 FROM [Orders] AS [o]
@@ -75,11 +79,12 @@ INNER JOIN [Customers] AS [o.Customer] ON [o].[CustomerID] = [o.Customer].[Custo
         {
             base.Select_Where_Navigations();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.Equal(
-                @"SELECT [o].[OrderID], [o].[CustomerID], [o].[EmployeeID], [o].[OrderDate]
+                @"SELECT [o].[OrderID], [o].[CustomerID], [o].[EmployeeID], [o].[OrderDate], [o.Customer].[CustomerID], [o.Customer].[Address], [o.Customer].[City], [o.Customer].[CompanyName], [o.Customer].[ContactName], [o.Customer].[ContactTitle], [o.Customer].[Country], [o.Customer].[Fax], [o.Customer].[Phone], [o.Customer].[PostalCode], [o.Customer].[Region]
 FROM [Orders] AS [o]
-INNER JOIN [Customers] AS [o.Customer] ON [o].[CustomerID] = [o.Customer].[CustomerID]
-WHERE (([o.Customer].[City] = 'Seattle') AND [o.Customer].[City] IS NOT NULL) AND (([o.Customer].[Phone] <> '555 555 5555') OR [o.Customer].[Phone] IS NULL)",
+LEFT JOIN [Customers] AS [o.Customer] ON [o].[CustomerID] = [o.Customer].[CustomerID]
+ORDER BY [o].[CustomerID]",
                 Sql);
         }
 
@@ -87,6 +92,7 @@ WHERE (([o.Customer].[City] = 'Seattle') AND [o.Customer].[City] IS NOT NULL) AN
         {
             base.Select_Where_Navigation_Multiple_Access();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.Equal(
                 @"SELECT [o].[OrderID], [o].[CustomerID], [o].[EmployeeID], [o].[OrderDate]
 FROM [Orders] AS [o]
@@ -99,6 +105,7 @@ WHERE (([o.Customer].[City] = 'Seattle') AND [o.Customer].[City] IS NOT NULL) AN
         {
             base.Select_Navigations_Where_Navigations();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.Equal(
                 @"SELECT [o.Customer].[CustomerID], [o.Customer].[Address], [o.Customer].[City], [o.Customer].[CompanyName], [o.Customer].[ContactName], [o.Customer].[ContactTitle], [o.Customer].[Country], [o.Customer].[Fax], [o.Customer].[Phone], [o.Customer].[PostalCode], [o.Customer].[Region]
 FROM [Orders] AS [o]
@@ -111,10 +118,12 @@ WHERE (([o.Customer].[City] = 'Seattle') AND [o.Customer].[City] IS NOT NULL) AN
         {
             base.Select_Where_Navigation_Client();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.Equal(
                 @"SELECT [o].[OrderID], [o].[CustomerID], [o].[EmployeeID], [o].[OrderDate], [o.Customer].[CustomerID], [o.Customer].[Address], [o.Customer].[City], [o.Customer].[CompanyName], [o.Customer].[ContactName], [o.Customer].[ContactTitle], [o.Customer].[Country], [o.Customer].[Fax], [o.Customer].[Phone], [o.Customer].[PostalCode], [o.Customer].[Region]
 FROM [Orders] AS [o]
-INNER JOIN [Customers] AS [o.Customer] ON [o].[CustomerID] = [o.Customer].[CustomerID]",
+LEFT JOIN [Customers] AS [o.Customer] ON [o].[CustomerID] = [o.Customer].[CustomerID]
+ORDER BY [o].[CustomerID]",
                 Sql);
         }
 
@@ -134,11 +143,12 @@ WHERE (([o.Customer].[City] = 'Seattle') AND [o.Customer].[City] IS NOT NULL) AN
         {
             base.Singleton_Navigation_With_Member_Access();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.Equal(
-                @"SELECT [o.Customer].[City]
+                @"SELECT [o].[OrderID], [o].[CustomerID], [o].[EmployeeID], [o].[OrderDate], [o.Customer].[CustomerID], [o.Customer].[Address], [o.Customer].[City], [o.Customer].[CompanyName], [o.Customer].[ContactName], [o.Customer].[ContactTitle], [o.Customer].[Country], [o.Customer].[Fax], [o.Customer].[Phone], [o.Customer].[PostalCode], [o.Customer].[Region]
 FROM [Orders] AS [o]
-INNER JOIN [Customers] AS [o.Customer] ON [o].[CustomerID] = [o.Customer].[CustomerID]
-WHERE (([o.Customer].[City] = 'Seattle') AND [o.Customer].[City] IS NOT NULL) AND (([o.Customer].[Phone] <> '555 555 5555') OR [o.Customer].[Phone] IS NULL)",
+LEFT JOIN [Customers] AS [o.Customer] ON [o].[CustomerID] = [o.Customer].[CustomerID]
+ORDER BY [o].[CustomerID]",
                 Sql);
         }
 
@@ -243,6 +253,7 @@ FROM [Orders] AS [o]",
         {
             base.Select_collection_navigation_multi_part();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.Equal(
                 @"SELECT [o.Customer].[CustomerID]
 FROM [Orders] AS [o]
@@ -571,6 +582,7 @@ WHERE [o].[CustomerID] IN ('ALFKI')",
         {
             base.Navigation_inside_contains();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.Equal(
                 @"SELECT [o].[OrderID], [o].[CustomerID], [o].[EmployeeID], [o].[OrderDate]
 FROM [Orders] AS [o]
@@ -583,6 +595,7 @@ WHERE [o.Customer].[City] IN ('Novigrad', 'Seattle')",
         {
             base.Navigation_inside_contains_nested();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.Equal(
                 @"SELECT [od].[OrderID], [od].[ProductID], [od].[Discount], [od].[Quantity], [od].[UnitPrice]
 FROM [Order Details] AS [od]
@@ -596,6 +609,7 @@ WHERE [od.Order.Customer].[City] IN ('Novigrad', 'Seattle')",
         {
             base.Navigation_from_join_clause_inside_contains();
 
+            //TODO: fix after DefaultIfEmpty changes are in
             Assert.Equal(
                 @"SELECT [od].[OrderID], [od].[ProductID], [od].[Discount], [od].[Quantity], [od].[UnitPrice]
 FROM [Order Details] AS [od]

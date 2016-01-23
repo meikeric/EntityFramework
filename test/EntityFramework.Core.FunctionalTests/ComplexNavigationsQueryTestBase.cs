@@ -748,7 +748,7 @@ namespace Microsoft.Data.Entity.FunctionalTests
         }
 
         // issue #3186
-        ////[ConditionalFact]
+        [ConditionalFact]
         public virtual void Select_nav_prop_reference_optional1()
         {
             List<string> expected;
@@ -810,23 +810,50 @@ namespace Microsoft.Data.Entity.FunctionalTests
         }
 
         // issue #3186
-        ////[ConditionalFact]
+        [ConditionalFact]
         public virtual void Select_nav_prop_reference_optional2()
         {
-            List<int> expected;
+            List<int?> expected;
             using (var context = CreateContext())
             {
                 expected = context.LevelOne
                     .Include(e => e.OneToOne_Optional_FK)
                     .ToList()
-                    .Select(e => e.OneToOne_Optional_FK.Id).ToList();
+                    .Select(e => e.OneToOne_Optional_FK?.Id).ToList();
             }
 
             ClearLog();
 
             using (var context = CreateContext())
             {
-                var query = context.LevelOne.Select(e => e.OneToOne_Optional_FK.Id);
+                var query = context.LevelOne.Select(e => (int?)e.OneToOne_Optional_FK.Id);
+                var result = query.ToList();
+
+                Assert.Equal(expected.Count, result.Count);
+                for (var i = 0; i < result.Count; i++)
+                {
+                    Assert.True(expected.Contains(result[i]));
+                }
+            }
+        }
+
+        [ConditionalFact]
+        public virtual void Select_nav_prop_reference_optional3()
+        {
+            List<string> expected;
+            using (var context = CreateContext())
+            {
+                expected = context.LevelTwo
+                    .Include(e => e.OneToOne_Optional_FK_Inverse)
+                    .ToList()
+                    .Select(e => e.OneToOne_Optional_FK_Inverse?.Name).ToList();
+            }
+
+            ClearLog();
+
+            using (var context = CreateContext())
+            {
+                var query = context.LevelTwo.Select(e => e.OneToOne_Optional_FK_Inverse.Name);
                 var result = query.ToList();
 
                 Assert.Equal(expected.Count, result.Count);
@@ -872,7 +899,126 @@ namespace Microsoft.Data.Entity.FunctionalTests
         }
 
         // issue #3186
-        ////[ConditionalFact]
+        [ConditionalFact]
+        public virtual void Select_multiple_nav_prop_reference_optional()
+        {
+            List<int?> expected;
+            using (var context = CreateContext())
+            {
+                expected = context.LevelOne
+                    .Include(e => e.OneToOne_Optional_FK.OneToOne_Optional_FK)
+                    .ToList()
+                    .Select(e => e.OneToOne_Optional_FK?.OneToOne_Optional_FK?.Id).ToList();
+            }
+
+            ClearLog();
+
+            using (var context = CreateContext())
+            {
+                var query = context.LevelOne.Select(e => (int?)e.OneToOne_Optional_FK.OneToOne_Optional_FK.Id);
+                var result = query.ToList();
+
+                Assert.Equal(expected.Count, result.Count);
+                for (var i = 0; i < result.Count; i++)
+                {
+                    Assert.True(expected.Contains(result[i]));
+                }
+            }
+        }
+
+        [ConditionalFact]
+        public virtual void Select_multiple_nav_prop_reference_required()
+        {
+            List<int?> expected;
+            using (var context = CreateContext())
+            {
+                expected = context.LevelOne
+                    .Include(e => e.OneToOne_Required_FK.OneToOne_Required_FK)
+                    .ToList()
+                    .Select(e => e.OneToOne_Required_FK?.OneToOne_Required_FK?.Id).ToList();
+            }
+
+            ClearLog();
+
+            using (var context = CreateContext())
+            {
+                var query = context.LevelOne.Select(e => e.OneToOne_Required_FK.OneToOne_Required_FK.Id);
+                var result = query.ToList();
+
+                Assert.Equal(expected.Count, result.Count);
+                for (var i = 0; i < result.Count; i++)
+                {
+                    Assert.True(expected.Contains(result[i]));
+                }
+            }
+        }
+
+
+        [ConditionalFact]
+        public virtual void Foo()
+        {
+            using (var context = CreateContext())
+            {
+                var query = context.LevelOne.Where(e => e.OneToOne_Optional_FK.OneToOne_Required_FK.OneToOne_Required_FK == null);
+                var result = query.ToList();
+            }
+        }
+
+        [ConditionalFact]
+        public virtual void Foo2()
+        {
+            using (var context = CreateContext())
+            {
+                var query = context.LevelOne.Where(e => e.OneToOne_Required_FK == e.OneToOne_Required_FK && e.OneToOne_Required_FK.OneToOne_Required_FK.OneToOne_Required_FK.Id == 5);
+                var result = query.ToList();
+            }
+        }
+
+        [ConditionalFact]
+        public virtual void Foo3()
+        {
+            using (var context = CreateContext())
+            {
+                var query = context.LevelOne.Where(e => 
+                    e.OneToOne_Required_FK.OneToOne_Required_FK == e.OneToOne_Required_FK.OneToOne_Optional_FK 
+                    && e.OneToOne_Optional_FK.OneToOne_Required_FK.OneToOne_Required_FK.Id == 5);
+                var result = query.ToList();
+            }
+        }
+
+
+        [ConditionalFact]
+        public virtual void Foo4()
+        {
+            using (var context = CreateContext())
+            {
+                var query = context.LevelOne.Where(e =>
+                    //e.OneToOne_Required_FK.OneToOne_Required_FK == e.OneToOne_Required_FK.OneToOne_Optional_FK
+                    //&& 
+                    e.OneToOne_Optional_FK.OneToOne_Required_FK.OneToOne_Required_FK.Id == 5);
+                var result = query.ToList();
+            }
+        }
+
+        [ConditionalFact]
+        public virtual void Foo5()
+        {
+            using (var context = CreateContext())
+            {
+                var query = context.LevelOne//.Where(e =>
+                                            //e.OneToOne_Required_FK.OneToOne_Required_FK == e.OneToOne_Required_FK.OneToOne_Optional_FK
+                                            //&& 
+                                            //e.OneToOne_Optional_FK.OneToOne_Required_FK.Id != 5)
+                    //.Where(e => e.OneToOne_Optional_FK.OneToOne_Required_FK.Name != null)
+                    .Select(e => new { name1 = e.OneToOne_Optional_FK.Name, name2 = e.OneToOne_Optional_FK.OneToOne_Required_FK.Name });
+                var result = query.ToList();
+            }
+        }
+
+
+
+        // issue #3186
+        [ConditionalFact]
         public virtual void Where_nav_prop_reference_optional1()
         {
             List<int> expected;
@@ -927,9 +1073,9 @@ namespace Microsoft.Data.Entity.FunctionalTests
             {
                 var query = from l1 in context.LevelOne
                             join l2Left in context.LevelTwo on l1.Id equals l2Left.Level1_Optional_Id into groupJoinLeft
-                            from l2Left in groupJoinLeft.DefaultIfEmpty()
+                            from l2Left in groupJoinLeft//.DefaultIfEmpty()
                             join l2Right in context.LevelTwo on l1.Id equals l2Right.Level1_Optional_Id into groupJoinRight
-                            from l2Right in groupJoinRight.DefaultIfEmpty()
+                            from l2Right in groupJoinRight//.DefaultIfEmpty()
                             where (l2Left == null ? null : l2Left.Name) == "L2 05" || (l2Right == null ? null : l2Right.Name) == "L2 07"
                             select l1.Id;
 
