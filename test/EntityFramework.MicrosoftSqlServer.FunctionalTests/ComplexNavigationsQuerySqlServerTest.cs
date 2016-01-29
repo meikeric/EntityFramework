@@ -583,6 +583,15 @@ ORDER BY [l1].[Id]",
                 Sql);
         }
 
+        public override void Include_with_optional_navigation()
+        {
+            base.Include_with_optional_navigation();
+
+            Assert.Equal(
+                @"",
+                Sql);
+        }
+
         // issue #3491
         //[Fact]
         public virtual void Multiple_complex_includes_from_sql()
