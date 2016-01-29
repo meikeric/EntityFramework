@@ -1135,7 +1135,7 @@ namespace Microsoft.Data.Entity.FunctionalTests
                             from l2Left in groupJoinLeft.DefaultIfEmpty()
                             join l2Right in l2s on l1.Id equals l2Right.Level1_Optional_Id into groupJoinRight
                             from l2Right in groupJoinRight.DefaultIfEmpty()
-                            where (l2Left == null ? null : l2Left.Name) == "L2 05" || (l2Right == null ? null : l2Right.Name) != "L2 42"
+                            where (l2Left != null ? l2Left.Name : null) == "L2 05" || (l2Right != null ? l2Right.Name : null) != "L2 42"
                             select l1.Id).ToList();
             }
 
@@ -1148,7 +1148,7 @@ namespace Microsoft.Data.Entity.FunctionalTests
                             from l2Left in groupJoinLeft.DefaultIfEmpty()
                             join l2Right in context.LevelTwo on l1.Id equals l2Right.Level1_Optional_Id into groupJoinRight
                             from l2Right in groupJoinRight.DefaultIfEmpty()
-                            where (l2Left == null ? null : l2Left.Name) == "L2 05" || (l2Right == null ? null : l2Right.Name) != "L2 42"
+                            where (l2Left != null ? l2Left.Name : null) == "L2 05" || (l2Right != null ? l2Right.Name : null) != "L2 42"
                             select l1.Id;
 
                 var result = query.ToList();
@@ -1275,6 +1275,20 @@ namespace Microsoft.Data.Entity.FunctionalTests
                               select l2).Sum(e => e == null ? 0 : e.Level1_Required_Id);
 
                 Assert.Equal(expected, result);
+            }
+        }
+
+        [ConditionalFact]
+        public virtual void Include_with_optional_navigation()
+        {
+            using (var context = CreateContext())
+            {
+                var query = from l1 in context.LevelOne.Include(e => e.OneToOne_Optional_FK)
+                            where l1.OneToOne_Optional_FK.Name != "L2 05"
+                            //where l1.OneToOne_Required_FK.Name != "L2 05"
+                            select l1;
+
+                var result = query.ToList();
             }
         }
     }

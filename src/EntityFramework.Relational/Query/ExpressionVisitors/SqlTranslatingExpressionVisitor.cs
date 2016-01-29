@@ -172,6 +172,12 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors
         {
             Check.NotNull(expression, nameof(expression));
 
+            var nullCheckRemoved = TryRemoveNullCheck(expression);
+            if (nullCheckRemoved != null)
+            {
+                return Visit(nullCheckRemoved);
+            }
+
             var test = Visit(expression.Test);
             var ifTrue = Visit(expression.IfTrue);
             var ifFalse = Visit(expression.IfFalse);
@@ -184,6 +190,38 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors
             }
 
             return null;
+        }
+
+        private Expression TryRemoveNullCheck(ConditionalExpression node)
+        {
+            var binaryTest = node.Test as BinaryExpression;
+            if (binaryTest == null || binaryTest.NodeType != ExpressionType.NotEqual)
+            {
+                return null;
+            }
+
+            var rightConstant = binaryTest.Right as ConstantExpression;
+            if (rightConstant == null || rightConstant.Value != null)
+            {
+                return null;
+            }
+
+            var ifFalseConstant = node.IfFalse as ConstantExpression;
+            if (ifFalseConstant == null || ifFalseConstant.Value != null)
+            {
+                return null;
+            }
+
+            var ifTrueMemberExpression = node.IfTrue.RemoveConvert() as MemberExpression;
+            var correctMemberExpression = ifTrueMemberExpression != null
+                 && ifTrueMemberExpression.Expression == binaryTest.Left;
+
+            var ifTruePropertyMethodCallExpression = node.IfTrue.RemoveConvert() as MethodCallExpression;
+            var correctPropertyMethodCallExpression = ifTruePropertyMethodCallExpression != null
+                 && EntityQueryModelVisitor.IsPropertyMethod(ifTruePropertyMethodCallExpression.Method)
+                 && ifTruePropertyMethodCallExpression.Arguments[0] == binaryTest.Left;
+
+            return correctMemberExpression || correctPropertyMethodCallExpression ? node.IfTrue : null;
         }
 
         private static Expression UnfoldStructuralComparison(ExpressionType expressionType, Expression expression)

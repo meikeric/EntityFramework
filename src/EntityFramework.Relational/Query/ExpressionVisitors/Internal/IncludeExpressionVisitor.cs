@@ -70,6 +70,65 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors.Internal
         {
             Check.NotNull(node, nameof(node));
 
+            if (node.Method.Name.Contains("_GroupJoin"))
+            {
+                var outerShaper = ((ConstantExpression)node.Arguments[2]).Value
+                        as Shaper;
+
+                var innerShaper = ((ConstantExpression)node.Arguments[3]).Value
+                        as Shaper;
+
+                if (outerShaper != null && outerShaper.IsShaperForQuerySource(_querySource))
+                {
+                    var resultType = node.Method.GetGenericArguments()[3];
+
+                    var memberExpression
+                        = _queryCompilationContext.QuerySourceMapping
+                            .GetExpression(_querySource) as MemberExpression;
+
+
+                    var type = typeof(Func<,>).MakeGenericType(resultType, typeof(object));
+
+                    var entityAccessor = Expression.Constant(null, type);
+                        //= memberExpression == null
+                        //    ? (Expression)
+                        //        Expression
+                        //            .Default(typeof(Func<,>)
+                        //                .MakeGenericType(resultType, typeof(object)))
+                        //    : Expression
+                        //        .Lambda(
+                        //            memberExpression,
+                        //            memberExpression.GetRootExpression<ParameterExpression>());
+
+                    var includeMethod = _queryCompilationContext.QueryMethodProvider.IncludeMethod
+                                .MakeGenericMethod(resultType);
+
+                    var result = 
+                        Expression.Call(
+                            includeMethod,
+                            Expression.Convert(node.Arguments[0], typeof(RelationalQueryContext)),
+                            node,
+                            entityAccessor,
+                            Expression.Constant(_navigationPath),
+                            Expression.NewArrayInit(
+                                _queryCompilationContext.QueryMethodProvider.IncludeRelatedValuesFactoryType,
+                                CreateIncludeRelatedValuesStrategyFactories(_querySource, _navigationPath)),
+                            Expression.Constant(_querySourceRequiresTracking));
+
+                    return result;
+
+
+
+                }
+
+                if (innerShaper != null && innerShaper.IsShaperForQuerySource(_querySource))
+                {
+
+                }
+
+            }
+
+
             if (node.Method.MethodIsClosedFormOf(
                 _queryCompilationContext.QueryMethodProvider.ShapedQueryMethod))
             {
@@ -97,10 +156,13 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors.Internal
                                     memberExpression,
                                     memberExpression.GetRootExpression<ParameterExpression>());
 
-                    return
+                    // TODO: inline after done with debugging
+                    var includeMethod = _queryCompilationContext.QueryMethodProvider.IncludeMethod
+                                .MakeGenericMethod(resultType);
+
+                    var result =
                         Expression.Call(
-                            _queryCompilationContext.QueryMethodProvider.IncludeMethod
-                                .MakeGenericMethod(resultType),
+                            includeMethod,
                             Expression.Convert(node.Arguments[0], typeof(RelationalQueryContext)),
                             node,
                             entityAccessor,
@@ -109,6 +171,8 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors.Internal
                                 _queryCompilationContext.QueryMethodProvider.IncludeRelatedValuesFactoryType,
                                 CreateIncludeRelatedValuesStrategyFactories(_querySource, _navigationPath)),
                             Expression.Constant(_querySourceRequiresTracking));
+
+                    return result;
                 }
             }
 

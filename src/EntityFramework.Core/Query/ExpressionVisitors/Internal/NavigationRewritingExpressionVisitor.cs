@@ -275,7 +275,7 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors.Internal
             }
 
             // todo: fix for composite key
-            if (newLeft.Type != newRight.Type)
+            if (node.NodeType != ExpressionType.ArrayIndex && newLeft.Type != newRight.Type)
             {
                 if (newLeft.Type.IsNullableType() && !newRight.Type.IsNullableType())
                 {
