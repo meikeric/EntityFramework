@@ -460,7 +460,7 @@ FROM [Customers] AS [c]",
         WHEN EXISTS (
             SELECT 1
             FROM [Order Details] AS [od]
-            WHERE ([od].[UnitPrice] > 10) AND ([o].[OrderID] = [od].[OrderID]))
+            WHERE ([od].[UnitPrice] > 10.0) AND ([o].[OrderID] = [od].[OrderID]))
         THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT)
     END
 ), CASE
