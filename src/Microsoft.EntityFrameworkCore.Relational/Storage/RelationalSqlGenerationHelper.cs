@@ -14,8 +14,7 @@ namespace Microsoft.EntityFrameworkCore.Storage
     public class RelationalSqlGenerationHelper : ISqlGenerationHelper
     {
         protected virtual string FloatingPointFormat => "{0}E0";
-        protected virtual int DecimalPrecision => 18;
-        protected virtual string DecimalFormat => "0.0".PadRight(DecimalPrecision - 1, '#');
+        protected virtual string DecimalFormat => "0.0###########################";
         protected virtual string DateTimeFormat => @"yyyy-MM-dd HH\:mm\:ss.fffffff";
         protected virtual string DateTimeOffsetFormat => @"yyyy-MM-dd HH\:mm\:ss.fffffffzzz";
 
