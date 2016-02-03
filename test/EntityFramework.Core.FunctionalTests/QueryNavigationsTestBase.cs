@@ -1,6 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.Entity.FunctionalTests.TestModels.Northwind;
@@ -122,18 +123,28 @@ namespace Microsoft.Data.Entity.FunctionalTests
         {
             using (var context = CreateContext())
             {
-                var employees
-                    = (from e in context.Set<Employee>()
-                        where null == e.Manager
-                        select e).ToList();
+                var query = (from e in context.Set<Employee>()
+                             where null == e.Manager
+                             select e);
 
-                Assert.Equal(1, employees.Count);
+                var result = query.ToList();
+
+                Assert.Equal(1, result.Count);
             }
         }
 
         [ConditionalFact]
         public virtual void Select_Where_Navigation_Null_Deep()
         {
+            var expected = new List<Employee>();
+            using (var context = CreateContext())
+            {
+                expected = context.Employees.Include(e => e.Manager.Manager).ToList()
+                    .Where(e => e.Manager == null || e.Manager.Manager == null).ToList();
+            }
+
+            ClearLog();
+
             using (var context = CreateContext())
             {
                 var employees
@@ -141,7 +152,11 @@ namespace Microsoft.Data.Entity.FunctionalTests
                         where e.Manager.Manager == null
                         select e).ToList();
 
-                Assert.Equal(5, employees.Count);
+                Assert.Equal(expected.Count, employees.Count);
+                foreach (var employee in employees)
+                {
+                    Assert.True(expected.Select(e => e.EmployeeID).Contains(employee.EmployeeID));
+                }
             }
         }
 
@@ -165,13 +180,14 @@ namespace Microsoft.Data.Entity.FunctionalTests
         {
             using (var context = CreateContext())
             {
-                var orders
-                    = (from o in context.Set<Order>().Include(o => o.Customer)
-                        where o.Customer.City == "Seattle"
-                        select o).ToList();
+                var query = from o in context.Set<Order>().Include(o => o.Customer)
+                            where o.Customer.City == "Seattle"
+                            select o;
 
-                Assert.Equal(14, orders.Count);
-                Assert.True(orders.All(o => o.Customer != null));
+                var result = query.ToList();
+
+                Assert.Equal(14, result.Count);
+                Assert.True(result.All(o => o.Customer != null));
             }
         }
 
@@ -194,16 +210,34 @@ namespace Microsoft.Data.Entity.FunctionalTests
         [ConditionalFact]
         public virtual void Select_Singleton_Navigation_With_Member_Access()
         {
+            List<Order> expected;
             using (var context = CreateContext())
             {
-                var orders
-                    = (from o in context.Set<Order>()
-                        where o.Customer.City == "Seattle"
-                        where o.Customer.Phone != "555 555 5555"
-                        select new { A = o.Customer, B = o.Customer.City }).ToList();
+                expected = context.Orders.Include(o => o.Customer)
+                    .ToList()
+                    .Where(o => o.Customer?.City == "Seattle")
+                    .Where(o => o.Customer?.Phone != "555 555 5555")
+                    .ToList();
+            }
 
-                Assert.Equal(14, orders.Count);
-                Assert.True(orders.All(o => (o.A != null) && (o.B != null)));
+            ClearLog();
+
+            using (var context = CreateContext())
+            {
+                var query = from o in context.Set<Order>()
+                            where o.Customer.City == "Seattle"
+                            where o.Customer.Phone != "555 555 5555"
+                            select new { A = o.Customer, B = o.Customer.City };
+
+                var result = query.ToList();
+
+                Assert.Equal(expected.Count, result.Count);
+                foreach (var resultElement in result)
+                {
+                    Assert.True(expected.Any(e => e.CustomerID == resultElement.A.CustomerID && e.Customer?.City == resultElement.B));
+                }
+
+                //Assert.True(orders.All(o => expected(o.A != null) && (o.B != null)));
             }
         }
 
@@ -241,16 +275,72 @@ namespace Microsoft.Data.Entity.FunctionalTests
         [ConditionalFact]
         public virtual void Select_Where_Navigation_Multiple_Access()
         {
+            List<string> expected;
             using (var context = CreateContext())
             {
-                var orders
-                    = (from o in context.Set<Order>()
-                        where (o.Customer.City == "Seattle")
-                              && (o.Customer.Phone != "555 555 5555")
-                        select o).ToList();
-
-                Assert.Equal(14, orders.Count);
+                expected = context.Orders.Include(o => o.Customer).ToList()
+                    .Where(o => o.Customer?.City == "Seattle"
+                        && o.Customer?.Phone != "555 555 5555")
+                    .Select(e => e.CustomerID)
+                    .ToList();
             }
+
+            ClearLog();
+
+            using (var context = CreateContext())
+            {
+                var query = from o in context.Set<Order>()
+                            where (o.Customer.City == "Seattle") 
+                                && (o.Customer.Phone != "555 555 5555")
+                            select o;
+
+                var result = query.ToList();
+
+                Assert.Equal(expected.Count, result.Count);
+                foreach (var resultElement in result)
+                {
+                    expected.Contains(resultElement.CustomerID);
+                }
+            }
+        }
+
+        [ConditionalFact]
+        public virtual void Foo_bar_grouping()
+        {
+            using (var context = CreateContext())
+            {
+                var query = context.Orders
+                    //.Include(o => o.Customer)
+                    .GroupBy(o => o.CustomerID);
+
+                foreach (var r in query.ToList())
+                {
+                    foreach( var i in r)
+                    {
+                        System.Console.WriteLine(i);
+                    }
+                }
+            }
+        }
+
+
+        [ConditionalFact]
+        public virtual void fooobar_client()
+        {
+            using (var context = CreateContext())
+            {
+                var query = context.Customers.Include(e => e.Orders).Where(c => c.IsLondon).ToList();
+
+
+                //foreach (var r in query.ToList())
+                //{
+                //    foreach (var i in r)
+                //    {
+                //        System.Console.WriteLine(i);
+                //    }
+                //}
+            }
+
         }
 
         [ConditionalFact]
@@ -691,5 +781,9 @@ namespace Microsoft.Data.Entity.FunctionalTests
         protected TFixture Fixture { get; }
 
         protected NorthwindContext CreateContext() => Fixture.CreateContext();
+
+        protected virtual void ClearLog()
+        {
+        }
     }
 }

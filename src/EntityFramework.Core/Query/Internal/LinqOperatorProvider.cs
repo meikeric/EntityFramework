@@ -182,13 +182,29 @@ namespace Microsoft.Data.Entity.Query.Internal
             IList<Func<TIn, object>> entityAccessors)
             where TIn : class
         {
-            return groupings
-                .Select(g =>
-                    new TrackingGrouping<TKey, TOut, TIn>(
+            var result = new List<TrackingGrouping<TKey, TOut, TIn>>();
+
+            foreach (var g in groupings)
+            {
+                var trackingGrouping = new TrackingGrouping<TKey, TOut, TIn>(
                         g,
                         queryContext,
                         entityTrackingInfos,
-                        entityAccessors));
+                        entityAccessors);
+
+                result.Add(trackingGrouping);
+            }
+
+            return result.AsEnumerable();
+
+
+            //return groupings
+            //    .Select(g =>
+            //        new TrackingGrouping<TKey, TOut, TIn>(
+            //            g,
+            //            queryContext,
+            //            entityTrackingInfos,
+            //            entityAccessors));
         }
 
         public virtual MethodInfo TrackGroupedEntities => _trackGroupedEntities;

@@ -68,6 +68,8 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors.Internal
 
                 var materializerLambda = (LambdaExpression)methodCallExpression.Arguments.Last();
                 var materializerReturnType = materializerLambda.ReturnType;
+
+                var materializerString = materializerLambda.ToString();
                 var materializer = materializerLambda.Compile();
 
                 if (_operatorToFlatten.Name != "_GroupJoin")
@@ -85,7 +87,8 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors.Internal
                                     _querySource,
                                     outerShaper,
                                     innerShaper,
-                                    materializer
+                                    materializer,
+                                    materializerString,
                                 });
 
                     return Expression.Call(
@@ -137,26 +140,33 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors.Internal
             IQuerySource querySource,
             IShaper<TOuter> outerShaper,
             IShaper<TInner> innerShaper,
-            Func<TOuter, TInner, TResult> materializer)
+            Func<TOuter, TInner, TResult> materializer,
+            string materializerString)
             => new CompositeShaper<TOuter, TInner, TResult>(
-                querySource, outerShaper, innerShaper, materializer);
+                querySource, outerShaper, innerShaper, materializer, materializerString);
 
-        private class CompositeShaper<TOuter, TInner, TResult> : Shaper, IShaper<TResult>
+        public class CompositeShaper<TOuter, TInner, TResult> : Shaper, IShaper<TResult>
         {
             private readonly IShaper<TOuter> _outerShaper;
             private readonly IShaper<TInner> _innerShaper;
             private readonly Func<TOuter, TInner, TResult> _materializer;
+            private readonly string _materializerString;
+
+            //public IShaper<TOuter> OuterShaper { get; set; }
+
 
             public CompositeShaper(
                 IQuerySource querySource,
                 IShaper<TOuter> outerShaper,
                 IShaper<TInner> innerShaper,
-                Func<TOuter, TInner, TResult> materializer)
+                Func<TOuter, TInner, TResult> materializer,
+                string materializerString)
                 : base(querySource)
             {
                 _outerShaper = outerShaper;
                 _innerShaper = innerShaper;
                 _materializer = materializer;
+                _materializerString = materializerString;
             }
 
             public TResult Shape(QueryContext queryContext, ValueBuffer valueBuffer)

@@ -234,15 +234,15 @@ namespace Microsoft.Data.Entity.Query
             Check.NotNull(includeSpecification, nameof(includeSpecification));
             Check.NotNull(resultType, nameof(resultType));
 
-            Expression
-                = _includeExpressionVisitorFactory
-                    .Create(
+            var includeExpressionVisitor
+                = _includeExpressionVisitorFactory.Create(
                         includeSpecification.QuerySource,
                         includeSpecification.NavigationPath,
                         QueryCompilationContext,
                         _navigationIndexMap[includeSpecification],
-                        querySourceRequiresTracking)
-                    .Visit(Expression);
+                        querySourceRequiresTracking);
+
+            Expression = includeExpressionVisitor.Visit(Expression);
         }
 
         public override void VisitQueryModel(QueryModel queryModel)
@@ -437,6 +437,14 @@ namespace Microsoft.Data.Entity.Query
                     var sqlTranslatingExpressionVisitor
                         = _sqlTranslatingExpressionVisitorFactory.Create(this);
 
+                    //var nullCheckRemovingVisitor = new NullCheckRemovingVisitor();
+
+                    //var predicate
+                    //    = sqlTranslatingExpressionVisitor
+                    //        .Visit(
+                    //            Expression.Equal(
+                    //                nullCheckRemovingVisitor.Visit(joinClause.OuterKeySelector),
+                    //                nullCheckRemovingVisitor.Visit(joinClause.InnerKeySelector)));
                     var predicate
                         = sqlTranslatingExpressionVisitor
                             .Visit(
@@ -497,6 +505,41 @@ namespace Microsoft.Data.Entity.Query
                 CheckClientEval(joinClause);
             }
         }
+
+        //private class NullCheckRemovingVisitor : ExpressionVisitorBase
+        //{
+        //    protected override Expression VisitConditional(ConditionalExpression node)
+        //    {
+        //        var binaryTest = node.Test as BinaryExpression;
+        //        if (binaryTest == null || binaryTest.NodeType != ExpressionType.NotEqual)
+        //        {
+        //            return node;
+        //        }
+
+        //        var rightConstant = binaryTest.Right as ConstantExpression;
+        //        if (rightConstant == null || rightConstant.Value != null)
+        //        {
+        //            return node;
+        //        }
+
+        //        var ifFalseConstant = node.IfFalse as ConstantExpression;
+        //        if (ifFalseConstant == null || ifFalseConstant.Value != null)
+        //        {
+        //            return node;
+        //        }
+
+        //        var ifTrueMemberExpression = node.IfTrue.RemoveConvert() as MemberExpression;
+        //        var correctMemberExpression = ifTrueMemberExpression != null
+        //             && ifTrueMemberExpression.Expression == binaryTest.Left;
+
+        //        var ifTruePropertyMethodCallExpression = node.IfTrue.RemoveConvert() as MethodCallExpression;
+        //        var correctPropertyMethodCallExpression = ifTruePropertyMethodCallExpression != null
+        //             && IsPropertyMethod(ifTruePropertyMethodCallExpression.Method)
+        //             && ifTruePropertyMethodCallExpression.Arguments[0] == binaryTest.Left;
+
+        //        return correctMemberExpression || correctPropertyMethodCallExpression ? node.IfTrue : node;
+        //    }
+        //}
 
         private class OuterJoinOrderingExtractor : ExpressionVisitor
         {
@@ -701,6 +744,9 @@ namespace Microsoft.Data.Entity.Query
                 var sqlTranslatingExpressionVisitor
                     = _sqlTranslatingExpressionVisitorFactory
                         .Create(this, selectExpression, whereClause.Predicate, _bindParentQueries);
+
+
+
 
                 var sqlPredicateExpression = sqlTranslatingExpressionVisitor.Visit(whereClause.Predicate);
 

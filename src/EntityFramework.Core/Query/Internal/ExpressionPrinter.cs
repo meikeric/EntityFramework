@@ -8,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using JetBrains.Annotations;
 using Microsoft.Data.Entity.Internal;
+using Microsoft.Data.Entity.Metadata.Internal;
 
 namespace Microsoft.Data.Entity.Query.Internal
 {
@@ -62,6 +63,7 @@ namespace Microsoft.Data.Entity.Query.Internal
             return new List<IConstantPrinter>
             {
                 new CollectionConstantPrinter(),
+                new MetadataPropertyConstantPrinter(),
                 new DefaultConstantPrinter()
             };
         }
@@ -352,13 +354,13 @@ namespace Microsoft.Data.Entity.Query.Internal
                 return node;
             }
 
-            if (node.Method.Name == "_TrackEntities")
-            {
-                TrackedQuery = true;
-                Visit(node.Arguments[0]);
+            //if (node.Method.Name == "_TrackEntities")
+            //{
+            //    TrackedQuery = true;
+            //    Visit(node.Arguments[0]);
 
-                return node;
-            }
+            //    return node;
+            //}
 
             if (node.Method.ReturnType != null)
             {
@@ -530,6 +532,22 @@ namespace Microsoft.Data.Entity.Query.Internal
 
                     stringBuilder.DecrementIndent();
                     appendAction(stringBuilder, "}");
+
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        private class MetadataPropertyConstantPrinter : IConstantPrinter
+        {
+            public bool TryPrintConstant(object value, IndentedStringBuilder stringBuilder)
+            {
+                var metadataProperty = value as Property;
+                if (metadataProperty != null)
+                {
+                    stringBuilder.Append("Property(" + metadataProperty.Name + ")");
 
                     return true;
                 }

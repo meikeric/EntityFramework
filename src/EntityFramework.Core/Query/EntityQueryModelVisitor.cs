@@ -524,6 +524,8 @@ namespace Microsoft.Data.Entity.Query
 
             var queryExecutor = queryExecutorExpression.Compile();
 
+            _expressionPrinter.Print(queryExecutorExpression);
+
             QueryCompilationContext.Logger.LogDebug(
                 CoreLoggingEventId.QueryPlan,
                 () =>
@@ -705,6 +707,16 @@ namespace Microsoft.Data.Entity.Query
 
             _queryCompilationContext.QuerySourceMapping
                 .AddMapping(groupJoinClause.JoinClause, innerItemParameter);
+            //if (!_queryCompilationContext.QuerySourceMapping.ContainsMapping(groupJoinClause.JoinClause))
+            //{
+            //    _queryCompilationContext.QuerySourceMapping
+            //        .AddMapping(groupJoinClause.JoinClause, innerItemParameter);
+            //}
+            //else
+            //{
+            //    _queryCompilationContext.QuerySourceMapping
+            //        .ReplaceMapping(groupJoinClause.JoinClause, innerItemParameter);
+            //}
 
             var innerKeySelectorExpression
                 = ReplaceClauseReferences(groupJoinClause.JoinClause.InnerKeySelector, groupJoinClause);

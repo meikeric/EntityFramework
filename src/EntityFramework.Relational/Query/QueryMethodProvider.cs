@@ -266,8 +266,12 @@ namespace Microsoft.Data.Entity.Query
             {
                 foreach (var innerResult in innerResults)
                 {
+                    //HAX
+                    //var entity = innerResult.GetType().GetTypeInfo().GetDeclaredField("Outer").GetValue(innerResult);
+
                     queryContext.QueryBuffer
                         .Include(
+                      //      entity,
                             entityAccessor == null ? innerResult : entityAccessor(innerResult), // TODO: Compile time?
                             navigationPath,
                             relatedEntitiesLoaders,
@@ -286,6 +290,57 @@ namespace Microsoft.Data.Entity.Query
                 queryContext.EndIncludeScope();
             }
         }
+
+        //private static readonly MethodInfo _includeGroupingMethodInfo
+        //    = typeof(QueryMethodProvider).GetTypeInfo()
+        //        .GetDeclaredMethod(nameof(_IncludeGrouping));
+
+        //internal static IEnumerable<T> _IncludeGrouping<T>(
+        //    RelationalQueryContext queryContext,
+        //    IEnumerable<T> innerResults,
+        //    IReadOnlyList<INavigation> navigationPath,
+        //    IReadOnlyList<Func<IIncludeRelatedValuesStrategy>> includeRelatedValuesStrategyFactories,
+        //    bool querySourceRequiresTracking)
+        //{
+        //    queryContext.BeginIncludeScope();
+
+        //    var includeRelatedValuesStrategies
+        //        = includeRelatedValuesStrategyFactories
+        //            .Select(f => f())
+        //            .ToList();
+
+        //    var relatedEntitiesLoaders
+        //        = includeRelatedValuesStrategies
+        //            .Select<IIncludeRelatedValuesStrategy, RelatedEntitiesLoader>(s => s.GetRelatedValues)
+        //            .ToArray();
+
+        //    try
+        //    {
+        //        foreach (var innerResult in innerResults)
+        //        {
+        //            queryContext.QueryBuffer
+        //                .Include(
+        //                    //entityAccessor == null ? innerResult : entityAccessor(innerResult), // TODO: Compile time?
+        //                    innerResult
+        //                    navigationPath,
+        //                    relatedEntitiesLoaders,
+        //                    querySourceRequiresTracking);
+
+        //            yield return innerResult;
+        //        }
+        //    }
+        //    finally // Need this to run even if innerResults is not fully consumed.
+        //    {
+        //        foreach (var includeRelatedValuesStrategy in includeRelatedValuesStrategies)
+        //        {
+        //            includeRelatedValuesStrategy.Dispose();
+        //        }
+
+        //        queryContext.EndIncludeScope();
+        //    }
+
+        //    return null;
+        //}
 
         public virtual MethodInfo CreateReferenceIncludeRelatedValuesStrategyMethod
             => _createReferenceIncludeStrategyMethodInfo;

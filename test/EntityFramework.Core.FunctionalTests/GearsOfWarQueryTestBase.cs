@@ -409,16 +409,17 @@ namespace Microsoft.Data.Entity.FunctionalTests
                     .OrderBy(e => e.Owner.CityOfBirth.Name);
 
                 var result = query.ToList();
-                Assert.Equal(9, result.Count);
-                Assert.Equal("Ephyra", result[0].Owner.CityOrBirthName);
+                Assert.Equal(10, result.Count);
+                Assert.Equal(null, result[0].Owner?.CityOrBirthName);
                 Assert.Equal("Ephyra", result[1].Owner.CityOrBirthName);
-                Assert.Equal("Hanover", result[2].Owner.CityOrBirthName);
+                Assert.Equal("Ephyra", result[2].Owner.CityOrBirthName);
                 Assert.Equal("Hanover", result[3].Owner.CityOrBirthName);
-                Assert.Equal("Jacinto", result[4].Owner.CityOrBirthName);
+                Assert.Equal("Hanover", result[4].Owner.CityOrBirthName);
                 Assert.Equal("Jacinto", result[5].Owner.CityOrBirthName);
-                Assert.Equal("Unknown", result[6].Owner.CityOrBirthName);
+                Assert.Equal("Jacinto", result[6].Owner.CityOrBirthName);
                 Assert.Equal("Unknown", result[7].Owner.CityOrBirthName);
                 Assert.Equal("Unknown", result[8].Owner.CityOrBirthName);
+                Assert.Equal("Unknown", result[9].Owner.CityOrBirthName);
             }
         }
 
@@ -686,7 +687,7 @@ namespace Microsoft.Data.Entity.FunctionalTests
             {
                 var cogTags
                     = (from o in context.Set<CogTag>()
-                        where o.Gear.IsMarcus
+                        where o.Gear != null && o.Gear.IsMarcus
                         select o).ToList();
 
                 Assert.Equal(1, cogTags.Count);

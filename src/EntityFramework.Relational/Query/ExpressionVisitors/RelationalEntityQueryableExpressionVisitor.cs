@@ -206,8 +206,7 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors
                 .QuerySourceRequiresMaterialization(_querySource)
                 || QueryModelVisitor.RequiresClientEval)
             {
-                var materializer
-                    = _materializerFactory
+                var materializerLambda = _materializerFactory
                         .CreateMaterializer(
                             entityType,
                             selectExpression,
@@ -216,7 +215,12 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors
                                     _relationalAnnotationProvider.For(p).ColumnName,
                                     p,
                                     _querySource),
-                            _querySource).Compile();
+                            _querySource);
+
+                var materializer = materializerLambda.Compile();
+
+                // TODO: use DI for this
+                var materializerString = new RelationalExpressionPrinter().Print(materializerLambda);
 
                 shaper
                     = (Shaper)_createEntityShaperMethodInfo.MakeGenericMethod(elementType)
@@ -227,6 +231,7 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors
                             QueryModelVisitor.QueryCompilationContext.IsTrackingQuery,
                             entityType.FindPrimaryKey(),
                             materializer,
+                            materializerString,
                             QueryModelVisitor.QueryCompilationContext.IsQueryBufferRequired
                         });
             }
@@ -249,6 +254,7 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors
             bool trackingQuery,
             IKey key,
             Func<ValueBuffer, object> materializer,
+            string materializerString,
             bool useQueryBuffer)
             where TEntity : class
             => !useQueryBuffer
@@ -257,12 +263,14 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors
                     entityType,
                     trackingQuery,
                     key,
-                    materializer)
+                    materializer,
+                    materializerString)
                 : new BufferedEntityShaper<TEntity>(
                     querySource,
                     entityType,
                     trackingQuery,
                     key,
-                    materializer);
+                    materializer,
+                    materializerString);
     }
 }

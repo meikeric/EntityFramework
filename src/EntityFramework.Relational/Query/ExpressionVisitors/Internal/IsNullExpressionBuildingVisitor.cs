@@ -13,10 +13,11 @@ namespace Microsoft.Data.Entity.Query.ExpressionVisitors.Internal
 
         protected override Expression VisitConstant(ConstantExpression node)
         {
-            if (node.Value == null)
-            {
-                AddToResult(node);
-            }
+            // TODO: optimize this
+            //if (node.Value != null)
+            //{
+                AddToResult(new IsNullExpression(node));
+            //}
 
             return node;
         }
