@@ -656,6 +656,10 @@ ORDER BY [l1.OneToOne_Required_FK].[Id]",
 
         public override void Optional_navigation_projected_into_DTO()
         {
+
+            this one is broken
+
+
             base.Optional_navigation_projected_into_DTO();
 
             Assert.Equal(

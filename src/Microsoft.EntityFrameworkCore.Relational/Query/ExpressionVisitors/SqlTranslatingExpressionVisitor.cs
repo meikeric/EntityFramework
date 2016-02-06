@@ -280,8 +280,9 @@ namespace Microsoft.EntityFrameworkCore.Query.ExpressionVisitors
                 return null;
             }
 
-            var nullExpression
-                = TransformNullComparison(leftExpression, rightExpression, binaryExpression.NodeType);
+            var nullExpression = !_inProjection 
+                ? TransformNullComparison(leftExpression, rightExpression, binaryExpression.NodeType)
+                : null;
 
             return nullExpression
                    ?? Expression.MakeBinary(binaryExpression.NodeType, leftExpression, rightExpression);
@@ -294,8 +295,8 @@ namespace Microsoft.EntityFrameworkCore.Query.ExpressionVisitors
                 || expressionType == ExpressionType.NotEqual)
             {
                 var constantExpression
-                    = right as ConstantExpression
-                      ?? left as ConstantExpression;
+                    = right.RemoveConvert() as ConstantExpression
+                      ?? left.RemoveConvert() as ConstantExpression;
 
                 if (constantExpression != null
                     && constantExpression.Value == null)
