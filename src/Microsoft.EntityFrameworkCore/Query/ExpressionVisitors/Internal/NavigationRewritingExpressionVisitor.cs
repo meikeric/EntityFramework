@@ -29,6 +29,8 @@ namespace Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal
         private readonly NavigationRewritingExpressionVisitor _parentvisitor;
 
         private QueryModel _queryModel;
+        private MethodInfo _stringConcatObjectMethodInfo = typeof(string).GetTypeInfo().GetDeclaredMethods("Concat")
+            .Where(m => m.GetParameters().Count() == 2 && m.GetParameters().First().ParameterType == typeof(object)).Single();
 
         private class NavigationJoin
         {
@@ -275,7 +277,10 @@ namespace Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal
             }
 
             // TODO: fix for composite key
-            if (node.NodeType != ExpressionType.ArrayIndex && newLeft.Type != newRight.Type)
+            // TODO: should we special case other methods? e.g. Equals(object, object)?
+            if (node.NodeType != ExpressionType.ArrayIndex 
+                && node.Method != _stringConcatObjectMethodInfo
+                && newLeft.Type != newRight.Type)
             {
                 if (newLeft.Type.IsNullableType() && (!newRight.Type.IsNullableType() || newRight.Type == typeof(object)))
                 {

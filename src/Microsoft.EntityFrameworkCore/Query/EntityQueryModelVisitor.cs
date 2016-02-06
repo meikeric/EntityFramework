@@ -523,8 +523,6 @@ namespace Microsoft.EntityFrameworkCore.Query
 
             var queryExecutor = queryExecutorExpression.Compile();
 
-            _expressionPrinter.Print(queryExecutorExpression);
-
             QueryCompilationContext.Logger.LogDebug(
                 CoreLoggingEventId.QueryPlan,
                 () =>
