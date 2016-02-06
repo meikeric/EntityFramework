@@ -13,9 +13,10 @@ namespace Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal
 
         protected override Expression VisitConstant(ConstantExpression node)
         {
+            //TODO: optimize this
             if (node.Value == null)
             {
-                AddToResult(node);
+                AddToResult(new IsNullExpression(node));
             }
 
             return node;

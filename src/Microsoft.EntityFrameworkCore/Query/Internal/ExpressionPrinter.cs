@@ -29,6 +29,11 @@ namespace Microsoft.EntityFrameworkCore.Query.Internal
             { ExpressionType.OrElse, " || " },
             { ExpressionType.AndAlso, " && " },
             { ExpressionType.Coalesce, " ?? " },
+            { ExpressionType.Add, " + " },
+            { ExpressionType.Subtract, " - " },
+            { ExpressionType.Multiply, " * " },
+            { ExpressionType.Divide, " * " },
+            { ExpressionType.Modulo, " % " },
         };
 
         protected static Action<IndentedStringBuilder, string> Append
@@ -83,6 +88,11 @@ namespace Microsoft.EntityFrameworkCore.Query.Internal
                 case ExpressionType.NotEqual:
                 case ExpressionType.OrElse:
                 case ExpressionType.Coalesce:
+                case ExpressionType.Add:
+                case ExpressionType.Subtract:
+                case ExpressionType.Multiply:
+                case ExpressionType.Divide:
+                case ExpressionType.Modulo:
                     VisitBinary((BinaryExpression)node);
                     break;
 

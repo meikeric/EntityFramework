@@ -4897,6 +4897,8 @@ namespace Microsoft.EntityFrameworkCore.FunctionalTests
         {
             using (var context = CreateContext())
             {
+                var bar = efQuery(context.Set<TItem>()).ToArray();
+
                 TestHelpers.AssertResults(
                     l2oQuery(NorthwindData.Set<TItem>()).ToArray(),
                     efQuery(context.Set<TItem>()).ToArray(),
