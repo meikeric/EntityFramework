@@ -4,9 +4,6 @@
     "Microsoft.EntityFrameworkCore.Microbenchmarks.Core": "1.0.0"
   },
   "testRunner": "xunit",
-  "commands": {
-    "test": "xunit.runner.aspnet"
-  },
   "frameworks": {
     "dnx451": {
       "dependencies": {
