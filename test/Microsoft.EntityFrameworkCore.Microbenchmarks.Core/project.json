@@ -21,7 +21,8 @@
       },
       "frameworkAssemblies": {
         "System.Data": "",
-        "System.Reflection": ""
+        "System.Reflection": "",
+        "System.Runtime": ""
       }
     }
   }
