@@ -92,13 +92,13 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.FunctionalTests
             relatedValueBuffers: IEnumerable<ValueBuffer> _Query(
                 queryContext: queryContext, 
                 shaperCommandContext: SelectExpression: 
-                    SELECT [o].[OrderID], [o].[CustomerID], [o].[EmployeeID], [o].[OrderDate]
-                    FROM [Orders] AS [o]
+                    SELECT [o0].[OrderID], [o0].[CustomerID], [o0].[EmployeeID], [o0].[OrderDate]
+                    FROM [Orders] AS [o0]
                     INNER JOIN (
                         SELECT DISTINCT [c].[CustomerID]
                         FROM [Customers] AS [c]
-                    ) AS [c] ON [o].[CustomerID] = [c].[CustomerID]
-                    ORDER BY [c].[CustomerID]
+                    ) AS [c0] ON [o0].[CustomerID] = [c0].[CustomerID]
+                    ORDER BY [c0].[CustomerID]
                 , 
                 queryIndex: 1
             )

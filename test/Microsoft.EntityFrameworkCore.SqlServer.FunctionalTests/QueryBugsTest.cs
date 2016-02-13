@@ -147,13 +147,13 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.FunctionalTests
 FROM [Customer] AS [c]
 ORDER BY [c].[FirstName], [c].[LastName]
 
-SELECT [o].[Id], [o].[CustomerFirstName], [o].[CustomerLastName], [o].[Name]
-FROM [Order] AS [o]
+SELECT [o0].[Id], [o0].[CustomerFirstName], [o0].[CustomerLastName], [o0].[Name]
+FROM [Order] AS [o0]
 INNER JOIN (
     SELECT DISTINCT [c].[FirstName], [c].[LastName]
     FROM [Customer] AS [c]
-) AS [c] ON ([o].[CustomerFirstName] = [c].[FirstName]) AND ([o].[CustomerLastName] = [c].[LastName])
-ORDER BY [c].[FirstName], [c].[LastName]";
+) AS [c0] ON ([o0].[CustomerFirstName] = [c0].[FirstName]) AND ([o0].[CustomerLastName] = [c0].[LastName])
+ORDER BY [c0].[FirstName], [c0].[LastName]";
 
                 Assert.Equal(expectedSql, TestSqlLoggerFactory.Sql);
             }

@@ -192,15 +192,15 @@ FROM [BaseInheritanceRelationshipEntity] AS [e]
 WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity')
 ORDER BY [e].[Id]
 
-SELECT [b].[Id], [b].[BaseParentId], [b].[Discriminator], [b].[Name]
-FROM [BaseCollectionOnBase] AS [b]
+SELECT [b0].[Id], [b0].[BaseParentId], [b0].[Discriminator], [b0].[Name]
+FROM [BaseCollectionOnBase] AS [b0]
 INNER JOIN (
     SELECT DISTINCT [e].[Id]
     FROM [BaseInheritanceRelationshipEntity] AS [e]
     WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity')
-) AS [e] ON [b].[BaseParentId] = [e].[Id]
-WHERE ([b].[Discriminator] = 'DerivedCollectionOnBase') OR ([b].[Discriminator] = 'BaseCollectionOnBase')
-ORDER BY [e].[Id]",
+) AS [e0] ON [b0].[BaseParentId] = [e0].[Id]
+WHERE ([b0].[Discriminator] = 'DerivedCollectionOnBase') OR ([b0].[Discriminator] = 'BaseCollectionOnBase')
+ORDER BY [e0].[Id]",
                 Sql);
         }
 
@@ -239,15 +239,15 @@ FROM [BaseInheritanceRelationshipEntity] AS [e]
 WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity') AND (([e].[Name] <> 'Bar') OR [e].[Name] IS NULL)
 ORDER BY [e].[Id]
 
-SELECT [b].[Id], [b].[BaseParentId], [b].[Discriminator], [b].[Name]
-FROM [BaseCollectionOnBase] AS [b]
+SELECT [b0].[Id], [b0].[BaseParentId], [b0].[Discriminator], [b0].[Name]
+FROM [BaseCollectionOnBase] AS [b0]
 INNER JOIN (
     SELECT DISTINCT [e].[Id]
     FROM [BaseInheritanceRelationshipEntity] AS [e]
     WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity') AND (([e].[Name] <> 'Bar') OR [e].[Name] IS NULL)
-) AS [e] ON [b].[BaseParentId] = [e].[Id]
-WHERE ([b].[Discriminator] = 'DerivedCollectionOnBase') OR ([b].[Discriminator] = 'BaseCollectionOnBase')
-ORDER BY [e].[Id]",
+) AS [e0] ON [b0].[BaseParentId] = [e0].[Id]
+WHERE ([b0].[Discriminator] = 'DerivedCollectionOnBase') OR ([b0].[Discriminator] = 'BaseCollectionOnBase')
+ORDER BY [e0].[Id]",
                 Sql);
         }
 
@@ -286,14 +286,14 @@ FROM [BaseInheritanceRelationshipEntity] AS [e]
 WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity')
 ORDER BY [e].[Id]
 
-SELECT [c].[Id], [c].[Name], [c].[ParentId]
-FROM [CollectionOnBase] AS [c]
+SELECT [c0].[Id], [c0].[Name], [c0].[ParentId]
+FROM [CollectionOnBase] AS [c0]
 INNER JOIN (
     SELECT DISTINCT [e].[Id]
     FROM [BaseInheritanceRelationshipEntity] AS [e]
     WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity')
-) AS [e] ON [c].[ParentId] = [e].[Id]
-ORDER BY [e].[Id]",
+) AS [e0] ON [c0].[ParentId] = [e0].[Id]
+ORDER BY [e0].[Id]",
                 Sql);
         }
 
@@ -322,14 +322,14 @@ FROM [BaseInheritanceRelationshipEntity] AS [e]
 WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity') AND (([e].[Name] <> 'Bar') OR [e].[Name] IS NULL)
 ORDER BY [e].[Id]
 
-SELECT [c].[Id], [c].[Name], [c].[ParentId]
-FROM [CollectionOnBase] AS [c]
+SELECT [c0].[Id], [c0].[Name], [c0].[ParentId]
+FROM [CollectionOnBase] AS [c0]
 INNER JOIN (
     SELECT DISTINCT [e].[Id]
     FROM [BaseInheritanceRelationshipEntity] AS [e]
     WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity') AND (([e].[Name] <> 'Bar') OR [e].[Name] IS NULL)
-) AS [e] ON [c].[ParentId] = [e].[Id]
-ORDER BY [e].[Id]",
+) AS [e0] ON [c0].[ParentId] = [e0].[Id]
+ORDER BY [e0].[Id]",
                 Sql);
         }
 
@@ -544,15 +544,15 @@ FROM [BaseInheritanceRelationshipEntity] AS [e]
 WHERE [e].[Discriminator] = 'DerivedInheritanceRelationshipEntity'
 ORDER BY [e].[Id]
 
-SELECT [b].[Id], [b].[BaseParentId], [b].[Discriminator], [b].[Name]
-FROM [BaseCollectionOnBase] AS [b]
+SELECT [b0].[Id], [b0].[BaseParentId], [b0].[Discriminator], [b0].[Name]
+FROM [BaseCollectionOnBase] AS [b0]
 INNER JOIN (
     SELECT DISTINCT [e].[Id]
     FROM [BaseInheritanceRelationshipEntity] AS [e]
     WHERE [e].[Discriminator] = 'DerivedInheritanceRelationshipEntity'
-) AS [e] ON [b].[BaseParentId] = [e].[Id]
-WHERE ([b].[Discriminator] = 'DerivedCollectionOnBase') OR ([b].[Discriminator] = 'BaseCollectionOnBase')
-ORDER BY [e].[Id]",
+) AS [e0] ON [b0].[BaseParentId] = [e0].[Id]
+WHERE ([b0].[Discriminator] = 'DerivedCollectionOnBase') OR ([b0].[Discriminator] = 'BaseCollectionOnBase')
+ORDER BY [e0].[Id]",
                 Sql);
         }
 
@@ -566,15 +566,15 @@ FROM [BaseInheritanceRelationshipEntity] AS [e]
 WHERE [e].[Discriminator] = 'DerivedInheritanceRelationshipEntity'
 ORDER BY [e].[Id]
 
-SELECT [b].[Id], [b].[Discriminator], [b].[Name], [b].[ParentId], [b].[DerivedInheritanceRelationshipEntityId]
-FROM [BaseCollectionOnDerived] AS [b]
+SELECT [b0].[Id], [b0].[Discriminator], [b0].[Name], [b0].[ParentId], [b0].[DerivedInheritanceRelationshipEntityId]
+FROM [BaseCollectionOnDerived] AS [b0]
 INNER JOIN (
     SELECT DISTINCT [e].[Id]
     FROM [BaseInheritanceRelationshipEntity] AS [e]
     WHERE [e].[Discriminator] = 'DerivedInheritanceRelationshipEntity'
-) AS [e] ON [b].[ParentId] = [e].[Id]
-WHERE ([b].[Discriminator] = 'DerivedCollectionOnDerived') OR ([b].[Discriminator] = 'BaseCollectionOnDerived')
-ORDER BY [e].[Id]",
+) AS [e0] ON [b0].[ParentId] = [e0].[Id]
+WHERE ([b0].[Discriminator] = 'DerivedCollectionOnDerived') OR ([b0].[Discriminator] = 'BaseCollectionOnDerived')
+ORDER BY [e0].[Id]",
                 Sql);
         }
 
@@ -708,8 +708,8 @@ LEFT JOIN (
 WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity')
 ORDER BY [b].[Id]
 
-SELECT [n].[Id], [n].[Discriminator], [n].[Name], [n].[ParentCollectionId], [n].[ParentReferenceId]
-FROM [NestedCollectionBase] AS [n]
+SELECT [n0].[Id], [n0].[Discriminator], [n0].[Name], [n0].[ParentCollectionId], [n0].[ParentReferenceId]
+FROM [NestedCollectionBase] AS [n0]
 INNER JOIN (
     SELECT DISTINCT [b].[Id]
     FROM [BaseInheritanceRelationshipEntity] AS [e]
@@ -719,9 +719,9 @@ INNER JOIN (
         WHERE ([b].[Discriminator] = 'DerivedReferenceOnBase') OR ([b].[Discriminator] = 'BaseReferenceOnBase')
     ) AS [b] ON [b].[BaseParentId] = [e].[Id]
     WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity')
-) AS [b] ON [n].[ParentReferenceId] = [b].[Id]
-WHERE ([n].[Discriminator] = 'NestedCollectionDerived') OR ([n].[Discriminator] = 'NestedCollectionBase')
-ORDER BY [b].[Id]",
+) AS [b0] ON [n0].[ParentReferenceId] = [b0].[Id]
+WHERE ([n0].[Discriminator] = 'NestedCollectionDerived') OR ([n0].[Discriminator] = 'NestedCollectionBase')
+ORDER BY [b0].[Id]",
                 Sql);
         }
 
@@ -749,8 +749,8 @@ LEFT JOIN (
 WHERE [e].[Discriminator] = 'DerivedInheritanceRelationshipEntity'
 ORDER BY [b].[Id]
 
-SELECT [n].[Id], [n].[Discriminator], [n].[Name], [n].[ParentCollectionId], [n].[ParentReferenceId]
-FROM [NestedCollectionBase] AS [n]
+SELECT [n0].[Id], [n0].[Discriminator], [n0].[Name], [n0].[ParentCollectionId], [n0].[ParentReferenceId]
+FROM [NestedCollectionBase] AS [n0]
 INNER JOIN (
     SELECT DISTINCT [b].[Id]
     FROM [BaseInheritanceRelationshipEntity] AS [e]
@@ -760,9 +760,9 @@ INNER JOIN (
         WHERE ([b].[Discriminator] = 'DerivedReferenceOnBase') OR ([b].[Discriminator] = 'BaseReferenceOnBase')
     ) AS [b] ON [b].[BaseParentId] = [e].[Id]
     WHERE [e].[Discriminator] = 'DerivedInheritanceRelationshipEntity'
-) AS [b] ON [n].[ParentReferenceId] = [b].[Id]
-WHERE ([n].[Discriminator] = 'NestedCollectionDerived') OR ([n].[Discriminator] = 'NestedCollectionBase')
-ORDER BY [b].[Id]",
+) AS [b0] ON [n0].[ParentReferenceId] = [b0].[Id]
+WHERE ([n0].[Discriminator] = 'NestedCollectionDerived') OR ([n0].[Discriminator] = 'NestedCollectionBase')
+ORDER BY [b0].[Id]",
                 Sql);
         }
 
@@ -806,20 +806,20 @@ FROM [BaseInheritanceRelationshipEntity] AS [e]
 WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity')
 ORDER BY [e].[Id]
 
-SELECT [b].[Id], [b].[BaseParentId], [b].[Discriminator], [b].[Name], [n].[Id], [n].[Discriminator], [n].[Name], [n].[ParentCollectionId], [n].[ParentReferenceId]
-FROM [BaseCollectionOnBase] AS [b]
+SELECT [b0].[Id], [b0].[BaseParentId], [b0].[Discriminator], [b0].[Name], [n].[Id], [n].[Discriminator], [n].[Name], [n].[ParentCollectionId], [n].[ParentReferenceId]
+FROM [BaseCollectionOnBase] AS [b0]
 INNER JOIN (
     SELECT DISTINCT [e].[Id]
     FROM [BaseInheritanceRelationshipEntity] AS [e]
     WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity')
-) AS [e] ON [b].[BaseParentId] = [e].[Id]
+) AS [e0] ON [b0].[BaseParentId] = [e0].[Id]
 LEFT JOIN (
     SELECT [n].*
     FROM [NestedReferenceBase] AS [n]
     WHERE ([n].[Discriminator] = 'NestedReferenceDerived') OR ([n].[Discriminator] = 'NestedReferenceBase')
-) AS [n] ON [n].[ParentCollectionId] = [b].[Id]
-WHERE ([b].[Discriminator] = 'DerivedCollectionOnBase') OR ([b].[Discriminator] = 'BaseCollectionOnBase')
-ORDER BY [e].[Id]",
+) AS [n] ON [n].[ParentCollectionId] = [b0].[Id]
+WHERE ([b0].[Discriminator] = 'DerivedCollectionOnBase') OR ([b0].[Discriminator] = 'BaseCollectionOnBase')
+ORDER BY [e0].[Id]",
                 Sql);
         }
 
@@ -881,30 +881,30 @@ FROM [BaseInheritanceRelationshipEntity] AS [e]
 WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity')
 ORDER BY [e].[Id]
 
-SELECT [b].[Id], [b].[BaseParentId], [b].[Discriminator], [b].[Name]
-FROM [BaseCollectionOnBase] AS [b]
+SELECT [b0].[Id], [b0].[BaseParentId], [b0].[Discriminator], [b0].[Name]
+FROM [BaseCollectionOnBase] AS [b0]
 INNER JOIN (
     SELECT DISTINCT [e].[Id]
     FROM [BaseInheritanceRelationshipEntity] AS [e]
     WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity')
-) AS [e] ON [b].[BaseParentId] = [e].[Id]
-WHERE ([b].[Discriminator] = 'DerivedCollectionOnBase') OR ([b].[Discriminator] = 'BaseCollectionOnBase')
-ORDER BY [e].[Id], [b].[Id]
+) AS [e0] ON [b0].[BaseParentId] = [e0].[Id]
+WHERE ([b0].[Discriminator] = 'DerivedCollectionOnBase') OR ([b0].[Discriminator] = 'BaseCollectionOnBase')
+ORDER BY [e0].[Id], [b0].[Id]
 
-SELECT [n].[Id], [n].[Discriminator], [n].[Name], [n].[ParentCollectionId], [n].[ParentReferenceId]
-FROM [NestedCollectionBase] AS [n]
+SELECT [n0].[Id], [n0].[Discriminator], [n0].[Name], [n0].[ParentCollectionId], [n0].[ParentReferenceId]
+FROM [NestedCollectionBase] AS [n0]
 INNER JOIN (
-    SELECT DISTINCT [e].[Id], [b].[Id] AS [Id0]
-    FROM [BaseCollectionOnBase] AS [b]
+    SELECT DISTINCT [e0].[Id], [b0].[Id] AS [Id0]
+    FROM [BaseCollectionOnBase] AS [b0]
     INNER JOIN (
         SELECT DISTINCT [e].[Id]
         FROM [BaseInheritanceRelationshipEntity] AS [e]
         WHERE [e].[Discriminator] IN ('DerivedInheritanceRelationshipEntity', 'BaseInheritanceRelationshipEntity')
-    ) AS [e] ON [b].[BaseParentId] = [e].[Id]
-    WHERE ([b].[Discriminator] = 'DerivedCollectionOnBase') OR ([b].[Discriminator] = 'BaseCollectionOnBase')
-) AS [b] ON [n].[ParentCollectionId] = [b].[Id0]
-WHERE ([n].[Discriminator] = 'NestedCollectionDerived') OR ([n].[Discriminator] = 'NestedCollectionBase')
-ORDER BY [b].[Id], [b].[Id0]",
+    ) AS [e0] ON [b0].[BaseParentId] = [e0].[Id]
+    WHERE ([b0].[Discriminator] = 'DerivedCollectionOnBase') OR ([b0].[Discriminator] = 'BaseCollectionOnBase')
+) AS [b00] ON [n0].[ParentCollectionId] = [b00].[Id0]
+WHERE ([n0].[Discriminator] = 'NestedCollectionDerived') OR ([n0].[Discriminator] = 'NestedCollectionBase')
+ORDER BY [b00].[Id], [b00].[Id0]",
                 Sql);
         }
 
@@ -965,14 +965,14 @@ WHERE [e].[Discriminator] IN ('NestedCollectionDerived', 'NestedCollectionBase')
 FROM [ReferencedEntity] AS [e]
 ORDER BY [e].[Id]
 
-SELECT [p].[Id], [p].[Name], [p].[ReferenceId], [p].[ReferencedEntityId], [r].[Id], [r].[Name]
-FROM [PrincipalEntity] AS [p]
+SELECT [p0].[Id], [p0].[Name], [p0].[ReferenceId], [p0].[ReferencedEntityId], [r].[Id], [r].[Name]
+FROM [PrincipalEntity] AS [p0]
 INNER JOIN (
     SELECT DISTINCT [e].[Id]
     FROM [ReferencedEntity] AS [e]
-) AS [e] ON [p].[ReferencedEntityId] = [e].[Id]
-LEFT JOIN [ReferencedEntity] AS [r] ON [p].[ReferenceId] = [r].[Id]
-ORDER BY [e].[Id]",
+) AS [e0] ON [p0].[ReferencedEntityId] = [e0].[Id]
+LEFT JOIN [ReferencedEntity] AS [r] ON [p0].[ReferenceId] = [r].[Id]
+ORDER BY [e0].[Id]",
                 Sql);
         }
 

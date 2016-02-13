@@ -22,25 +22,26 @@ namespace Microsoft.EntityFrameworkCore.Sqlite.FunctionalTests
 FROM ""Level1"" AS ""e""
 ORDER BY ""e"".""Id""
 
-SELECT ""l"".""Id"", ""l"".""Level1_Optional_Id"", ""l"".""Level1_Required_Id"", ""l"".""Name"", ""l"".""OneToMany_Optional_InverseId"", ""l"".""OneToMany_Optional_Self_InverseId"", ""l"".""OneToMany_Required_InverseId"", ""l"".""OneToMany_Required_Self_InverseId"", ""l"".""OneToOne_Optional_PK_InverseId"", ""l"".""OneToOne_Optional_SelfId""
-FROM ""Level2"" AS ""l""
+SELECT ""l0"".""Id"", ""l0"".""Level1_Optional_Id"", ""l0"".""Level1_Required_Id"", ""l0"".""Name"", ""l0"".""OneToMany_Optional_InverseId"", ""l0"".""OneToMany_Optional_Self_InverseId"", ""l0"".""OneToMany_Required_InverseId"", ""l0"".""OneToMany_Required_Self_InverseId"", ""l0"".""OneToOne_Optional_PK_InverseId"", ""l0"".""OneToOne_Optional_SelfId""
+FROM ""Level2"" AS ""l0""
 INNER JOIN (
     SELECT DISTINCT ""e"".""Id""
     FROM ""Level1"" AS ""e""
-) AS ""e"" ON ""l"".""OneToMany_Optional_InverseId"" = ""e"".""Id""
-ORDER BY ""e"".""Id"", ""l"".""Id""
+) AS ""e0"" ON ""l0"".""OneToMany_Optional_InverseId"" = ""e0"".""Id""
+ORDER BY ""e0"".""Id"", ""l0"".""Id""
 
-SELECT ""l"".""Id"", ""l"".""Level2_Optional_Id"", ""l"".""Level2_Required_Id"", ""l"".""Name"", ""l"".""OneToMany_Optional_InverseId"", ""l"".""OneToMany_Optional_Self_InverseId"", ""l"".""OneToMany_Required_InverseId"", ""l"".""OneToMany_Required_Self_InverseId"", ""l"".""OneToOne_Optional_PK_InverseId"", ""l"".""OneToOne_Optional_SelfId""
-FROM ""Level3"" AS ""l""
+SELECT ""l10"".""Id"", ""l10"".""Level2_Optional_Id"", ""l10"".""Level2_Required_Id"", ""l10"".""Name"", ""l10"".""OneToMany_Optional_InverseId"", ""l10"".""OneToMany_Optional_Self_InverseId"", ""l10"".""OneToMany_Required_InverseId"", ""l10"".""OneToMany_Required_Self_InverseId"", ""l10"".""OneToOne_Optional_PK_InverseId"", ""l10"".""OneToOne_Optional_SelfId""
+FROM ""Level3"" AS ""l10""
 INNER JOIN (
-    SELECT DISTINCT ""e"".""Id"", ""l"".""Id"" AS ""Id0""
-    FROM ""Level2"" AS ""l""
+    SELECT DISTINCT ""e0"".""Id"", ""l0"".""Id"" AS ""Id0""
+    FROM ""Level2"" AS ""l0""
     INNER JOIN (
         SELECT DISTINCT ""e"".""Id""
         FROM ""Level1"" AS ""e""
-    ) AS ""e"" ON ""l"".""OneToMany_Optional_InverseId"" = ""e"".""Id""
-) AS ""l0"" ON ""l"".""OneToMany_Optional_InverseId"" = ""l0"".""Id0""
-ORDER BY ""l0"".""Id"", ""l0"".""Id0""", Sql);
+    ) AS ""e0"" ON ""l0"".""OneToMany_Optional_InverseId"" = ""e0"".""Id""
+) AS ""l00"" ON ""l10"".""OneToMany_Optional_InverseId"" = ""l00"".""Id0""
+ORDER BY ""l00"".""Id"", ""l00"".""Id0""",
+                Sql);
         }
 
         public override void Multi_level_include_correct_PK_is_chosen_as_the_join_predicate_for_queries_that_join_same_table_multiple_times()
@@ -52,43 +53,44 @@ ORDER BY ""l0"".""Id"", ""l0"".""Id0""", Sql);
 FROM ""Level1"" AS ""e""
 ORDER BY ""e"".""Id""
 
-SELECT ""l"".""Id"", ""l"".""Level1_Optional_Id"", ""l"".""Level1_Required_Id"", ""l"".""Name"", ""l"".""OneToMany_Optional_InverseId"", ""l"".""OneToMany_Optional_Self_InverseId"", ""l"".""OneToMany_Required_InverseId"", ""l"".""OneToMany_Required_Self_InverseId"", ""l"".""OneToOne_Optional_PK_InverseId"", ""l"".""OneToOne_Optional_SelfId""
-FROM ""Level2"" AS ""l""
+SELECT ""l0"".""Id"", ""l0"".""Level1_Optional_Id"", ""l0"".""Level1_Required_Id"", ""l0"".""Name"", ""l0"".""OneToMany_Optional_InverseId"", ""l0"".""OneToMany_Optional_Self_InverseId"", ""l0"".""OneToMany_Required_InverseId"", ""l0"".""OneToMany_Required_Self_InverseId"", ""l0"".""OneToOne_Optional_PK_InverseId"", ""l0"".""OneToOne_Optional_SelfId""
+FROM ""Level2"" AS ""l0""
 INNER JOIN (
     SELECT DISTINCT ""e"".""Id""
     FROM ""Level1"" AS ""e""
-) AS ""e"" ON ""l"".""OneToMany_Optional_InverseId"" = ""e"".""Id""
-ORDER BY ""e"".""Id"", ""l"".""Id""
+) AS ""e0"" ON ""l0"".""OneToMany_Optional_InverseId"" = ""e0"".""Id""
+ORDER BY ""e0"".""Id"", ""l0"".""Id""
 
-SELECT ""l"".""Id"", ""l"".""Level2_Optional_Id"", ""l"".""Level2_Required_Id"", ""l"".""Name"", ""l"".""OneToMany_Optional_InverseId"", ""l"".""OneToMany_Optional_Self_InverseId"", ""l"".""OneToMany_Required_InverseId"", ""l"".""OneToMany_Required_Self_InverseId"", ""l"".""OneToOne_Optional_PK_InverseId"", ""l"".""OneToOne_Optional_SelfId"", ""l1"".""Id"", ""l1"".""Level1_Optional_Id"", ""l1"".""Level1_Required_Id"", ""l1"".""Name"", ""l1"".""OneToMany_Optional_InverseId"", ""l1"".""OneToMany_Optional_Self_InverseId"", ""l1"".""OneToMany_Required_InverseId"", ""l1"".""OneToMany_Required_Self_InverseId"", ""l1"".""OneToOne_Optional_PK_InverseId"", ""l1"".""OneToOne_Optional_SelfId""
-FROM ""Level3"" AS ""l""
+SELECT ""l10"".""Id"", ""l10"".""Level2_Optional_Id"", ""l10"".""Level2_Required_Id"", ""l10"".""Name"", ""l10"".""OneToMany_Optional_InverseId"", ""l10"".""OneToMany_Optional_Self_InverseId"", ""l10"".""OneToMany_Required_InverseId"", ""l10"".""OneToMany_Required_Self_InverseId"", ""l10"".""OneToOne_Optional_PK_InverseId"", ""l10"".""OneToOne_Optional_SelfId"", ""l2"".""Id"", ""l2"".""Level1_Optional_Id"", ""l2"".""Level1_Required_Id"", ""l2"".""Name"", ""l2"".""OneToMany_Optional_InverseId"", ""l2"".""OneToMany_Optional_Self_InverseId"", ""l2"".""OneToMany_Required_InverseId"", ""l2"".""OneToMany_Required_Self_InverseId"", ""l2"".""OneToOne_Optional_PK_InverseId"", ""l2"".""OneToOne_Optional_SelfId""
+FROM ""Level3"" AS ""l10""
 INNER JOIN (
-    SELECT DISTINCT ""e"".""Id"", ""l"".""Id"" AS ""Id0""
-    FROM ""Level2"" AS ""l""
+    SELECT DISTINCT ""e0"".""Id"", ""l0"".""Id"" AS ""Id0""
+    FROM ""Level2"" AS ""l0""
     INNER JOIN (
         SELECT DISTINCT ""e"".""Id""
         FROM ""Level1"" AS ""e""
-    ) AS ""e"" ON ""l"".""OneToMany_Optional_InverseId"" = ""e"".""Id""
-) AS ""l0"" ON ""l"".""OneToMany_Optional_InverseId"" = ""l0"".""Id0""
-INNER JOIN ""Level2"" AS ""l1"" ON ""l"".""OneToMany_Required_InverseId"" = ""l1"".""Id""
-ORDER BY ""l0"".""Id"", ""l0"".""Id0"", ""l1"".""Id""
+    ) AS ""e0"" ON ""l0"".""OneToMany_Optional_InverseId"" = ""e0"".""Id""
+) AS ""l00"" ON ""l10"".""OneToMany_Optional_InverseId"" = ""l00"".""Id0""
+INNER JOIN ""Level2"" AS ""l2"" ON ""l10"".""OneToMany_Required_InverseId"" = ""l2"".""Id""
+ORDER BY ""l00"".""Id"", ""l00"".""Id0"", ""l2"".""Id""
 
-SELECT ""l"".""Id"", ""l"".""Level2_Optional_Id"", ""l"".""Level2_Required_Id"", ""l"".""Name"", ""l"".""OneToMany_Optional_InverseId"", ""l"".""OneToMany_Optional_Self_InverseId"", ""l"".""OneToMany_Required_InverseId"", ""l"".""OneToMany_Required_Self_InverseId"", ""l"".""OneToOne_Optional_PK_InverseId"", ""l"".""OneToOne_Optional_SelfId""
-FROM ""Level3"" AS ""l""
+SELECT ""l30"".""Id"", ""l30"".""Level2_Optional_Id"", ""l30"".""Level2_Required_Id"", ""l30"".""Name"", ""l30"".""OneToMany_Optional_InverseId"", ""l30"".""OneToMany_Optional_Self_InverseId"", ""l30"".""OneToMany_Required_InverseId"", ""l30"".""OneToMany_Required_Self_InverseId"", ""l30"".""OneToOne_Optional_PK_InverseId"", ""l30"".""OneToOne_Optional_SelfId""
+FROM ""Level3"" AS ""l30""
 INNER JOIN (
-    SELECT DISTINCT ""l0"".""Id"", ""l0"".""Id0"", ""l1"".""Id"" AS ""Id1""
-    FROM ""Level3"" AS ""l""
+    SELECT DISTINCT ""l00"".""Id"", ""l00"".""Id0"", ""l2"".""Id"" AS ""Id1""
+    FROM ""Level3"" AS ""l10""
     INNER JOIN (
-        SELECT DISTINCT ""e"".""Id"", ""l"".""Id"" AS ""Id0""
-        FROM ""Level2"" AS ""l""
+        SELECT DISTINCT ""e0"".""Id"", ""l0"".""Id"" AS ""Id0""
+        FROM ""Level2"" AS ""l0""
         INNER JOIN (
             SELECT DISTINCT ""e"".""Id""
             FROM ""Level1"" AS ""e""
-        ) AS ""e"" ON ""l"".""OneToMany_Optional_InverseId"" = ""e"".""Id""
-    ) AS ""l0"" ON ""l"".""OneToMany_Optional_InverseId"" = ""l0"".""Id0""
-    INNER JOIN ""Level2"" AS ""l1"" ON ""l"".""OneToMany_Required_InverseId"" = ""l1"".""Id""
-) AS ""l1"" ON ""l"".""OneToMany_Optional_InverseId"" = ""l1"".""Id1""
-ORDER BY ""l1"".""Id"", ""l1"".""Id0"", ""l1"".""Id1""", Sql);
+        ) AS ""e0"" ON ""l0"".""OneToMany_Optional_InverseId"" = ""e0"".""Id""
+    ) AS ""l00"" ON ""l10"".""OneToMany_Optional_InverseId"" = ""l00"".""Id0""
+    INNER JOIN ""Level2"" AS ""l2"" ON ""l10"".""OneToMany_Required_InverseId"" = ""l2"".""Id""
+) AS ""l20"" ON ""l30"".""OneToMany_Optional_InverseId"" = ""l20"".""Id1""
+ORDER BY ""l20"".""Id"", ""l20"".""Id0"", ""l20"".""Id1""",
+                Sql);
         }
 
         private static string Sql => TestSqlLoggerFactory.Sql;

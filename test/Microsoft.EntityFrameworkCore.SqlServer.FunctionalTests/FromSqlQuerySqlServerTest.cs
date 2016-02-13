@@ -242,15 +242,15 @@ FROM (
 ) AS [c]
 ORDER BY [c].[CustomerID]
 
-SELECT [o].[OrderID], [o].[CustomerID], [o].[EmployeeID], [o].[OrderDate]
-FROM [Orders] AS [o]
+SELECT [o0].[OrderID], [o0].[CustomerID], [o0].[EmployeeID], [o0].[OrderDate]
+FROM [Orders] AS [o0]
 INNER JOIN (
     SELECT DISTINCT [c].[CustomerID]
     FROM (
         SELECT * FROM ""Customers""
     ) AS [c]
-) AS [c] ON [o].[CustomerID] = [c].[CustomerID]
-ORDER BY [c].[CustomerID]",
+) AS [c0] ON [o0].[CustomerID] = [c0].[CustomerID]
+ORDER BY [c0].[CustomerID]",
                 Sql);
         }
 
@@ -266,16 +266,16 @@ FROM (
 WHERE [c].[City] = 'London'
 ORDER BY [c].[CustomerID]
 
-SELECT [o].[OrderID], [o].[CustomerID], [o].[EmployeeID], [o].[OrderDate]
-FROM [Orders] AS [o]
+SELECT [o0].[OrderID], [o0].[CustomerID], [o0].[EmployeeID], [o0].[OrderDate]
+FROM [Orders] AS [o0]
 INNER JOIN (
     SELECT DISTINCT [c].[CustomerID]
     FROM (
         SELECT * FROM ""Customers""
     ) AS [c]
     WHERE [c].[City] = 'London'
-) AS [c] ON [o].[CustomerID] = [c].[CustomerID]
-ORDER BY [c].[CustomerID]",
+) AS [c0] ON [o0].[CustomerID] = [c0].[CustomerID]
+ORDER BY [c0].[CustomerID]",
                 Sql);
         }
 
