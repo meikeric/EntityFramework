@@ -114,7 +114,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
             }
         }
 
-        private IEnumerable<Func<IReadOnlyList<IRelationalCommand>>> GetMigrationCommands(
+        private IEnumerable<Func<IReadOnlyList<IRelationalCommandValueCache>>> GetMigrationCommands(
             IReadOnlyList<HistoryRow> appliedMigrationEntries,
             string targetMigration = null)
         {
@@ -303,11 +303,11 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
             return builder.ToString();
         }
 
-        protected virtual IReadOnlyList<IRelationalCommand> GenerateUpSql([NotNull] Migration migration)
+        protected virtual IReadOnlyList<IRelationalCommandValueCache> GenerateUpSql([NotNull] Migration migration)
         {
             Check.NotNull(migration, nameof(migration));
 
-            var commands = new List<IRelationalCommand>();
+            var commands = new List<IRelationalCommandValueCache>();
             commands.AddRange(_migrationsSqlGenerator.Generate(migration.UpOperations, migration.TargetModel));
             commands.Add(
                 _rawSqlCommandBuilder.Build(_historyRepository.GetInsertScript(new HistoryRow(migration.GetId(), ProductInfo.GetVersion()))));
@@ -315,13 +315,13 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
             return commands;
         }
 
-        protected virtual IReadOnlyList<IRelationalCommand> GenerateDownSql(
+        protected virtual IReadOnlyList<IRelationalCommandValueCache> GenerateDownSql(
             [NotNull] Migration migration,
             [CanBeNull] Migration previousMigration)
         {
             Check.NotNull(migration, nameof(migration));
 
-            var commands = new List<IRelationalCommand>();
+            var commands = new List<IRelationalCommandValueCache>();
             commands.AddRange(_migrationsSqlGenerator.Generate(migration.DownOperations, previousMigration?.TargetModel));
             commands.Add(
                 _rawSqlCommandBuilder.Build(_historyRepository.GetDeleteScript(migration.GetId())));
@@ -329,7 +329,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
             return commands;
         }
 
-        private void Execute(IEnumerable<IRelationalCommand> relationalCommands)
+        private void Execute(IEnumerable<IRelationalCommandValueCache> relationalCommands)
         {
             using (var transaction = _connection.BeginTransaction())
             {
@@ -340,7 +340,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
         }
 
         private async Task ExecuteAsync(
-            IEnumerable<IRelationalCommand> relationalCommands,
+            IEnumerable<IRelationalCommandValueCache> relationalCommands,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             using (var transaction = await _connection.BeginTransactionAsync(cancellationToken))

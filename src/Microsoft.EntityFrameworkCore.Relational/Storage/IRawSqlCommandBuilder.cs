@@ -8,7 +8,7 @@ namespace Microsoft.EntityFrameworkCore.Storage
 {
     public interface IRawSqlCommandBuilder
     {
-        IRelationalCommand Build(
+        IRelationalCommandValueCache Build(
             [NotNull] string sql,
             [CanBeNull] IReadOnlyList<object> parameters = null);
     }

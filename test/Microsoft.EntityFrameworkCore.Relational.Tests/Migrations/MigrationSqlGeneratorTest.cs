@@ -25,8 +25,8 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                 var typeMapper = new ConcreteRelationalTypeMapper();
 
                 return new ConcreteMigrationSqlGenerator(
-                    new RelationalCommandBuilderFactory(
-                        new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+                    new RelationalCommandValueCacheBuilderFactory(
+                        new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                         new DiagnosticListener("Fake"),
                         typeMapper),
                     new RelationalSqlGenerationHelper(),
@@ -337,7 +337,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
         private class ConcreteMigrationSqlGenerator : MigrationsSqlGenerator
         {
             public ConcreteMigrationSqlGenerator(
-                IRelationalCommandBuilderFactory commandBuilderFactory,
+                IRelationalCommandValueCacheBuilderFactory commandBuilderFactory,
                 ISqlGenerationHelper sqlGenerationHelper,
                 IRelationalTypeMapper typeMapper,
                 IRelationalAnnotationProvider annotations)

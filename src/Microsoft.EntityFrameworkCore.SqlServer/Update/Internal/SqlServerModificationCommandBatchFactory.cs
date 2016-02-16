@@ -12,14 +12,14 @@ namespace Microsoft.EntityFrameworkCore.Update.Internal
 {
     public class SqlServerModificationCommandBatchFactory : IModificationCommandBatchFactory
     {
-        private readonly IRelationalCommandBuilderFactory _commandBuilderFactory;
+        private readonly IRelationalCommandValueCacheBuilderFactory _commandBuilderFactory;
         private readonly ISqlGenerationHelper _sqlGenerationHelper;
         private readonly ISqlServerUpdateSqlGenerator _updateSqlGenerator;
         private readonly IRelationalValueBufferFactoryFactory _valueBufferFactoryFactory;
         private readonly IDbContextOptions _options;
 
         public SqlServerModificationCommandBatchFactory(
-            [NotNull] IRelationalCommandBuilderFactory commandBuilderFactory,
+            [NotNull] IRelationalCommandValueCacheBuilderFactory commandBuilderFactory,
             [NotNull] ISqlGenerationHelper sqlGenerationHelper,
             [NotNull] ISqlServerUpdateSqlGenerator updateSqlGenerator,
             [NotNull] IRelationalValueBufferFactoryFactory valueBufferFactoryFactory,

@@ -340,28 +340,22 @@ namespace Microsoft.EntityFrameworkCore.Query.Sql
 
                         substitutions = new string[argumentValues.Length];
 
-                        for (var i = 0; i < argumentValues.Length; i++)
-                        {
-                            var parameterName = _parameterNameGenerator.GenerateNext();
+                        _relationalCommandBuilder.AddCompositeParameter(
+                            parameterExpression.Name,
+                            builder =>
+                            {
+                                for (var i = 0; i < argumentValues.Length; i++)
+                                {
+                                    var parameterName = _parameterNameGenerator.GenerateNext();
 
-                            substitutions[i] = SqlGenerator.GenerateParameterName(parameterName);
+                                    substitutions[i] = SqlGenerator.GenerateParameterName(parameterName);
 
-                            var value = argumentValues[i];
-
-                            relationalParameters[i]
-                                = _relationalCommandBuilder
-                                    .CreateParameter(
+                                    builder.AddParameterByValue(
+                                        parameterName,
                                         substitutions[i],
-                                        value,
-                                        t => t.GetMappingForValue(value),
-                                        value?.GetType().IsNullableType(),
-                                        parameterName);
-                        }
-
-                        _relationalCommandBuilder.AddParameter(
-                            new CompositeRelationalParameter(
-                                parameterExpression.Name,
-                                relationalParameters));
+                                        argumentValues[i]);
+                                }
+                            });
                     }
 
                     break;
@@ -412,7 +406,10 @@ namespace Microsoft.EntityFrameworkCore.Query.Sql
 
                                     substitutions[i] = parameterName;
 
-                                    _relationalCommandBuilder.AddParameter(parameterName, value, parameter.Name);
+                                    _relationalCommandBuilder.AddParameterByValue(
+                                        parameter.Name,
+                                        parameterName,
+                                        value);
                                 }
 
                                 break;
@@ -1125,13 +1122,17 @@ namespace Microsoft.EntityFrameworkCore.Query.Sql
         {
             Check.NotNull(expression, nameof(expression));
 
-            object value;
-            if (_parametersValues.TryGetValue(expression.Name, out value))
-            {
-                var name = _sqlGenerationHelper.GenerateParameterName(expression.Name);
+            var name = _sqlGenerationHelper.GenerateParameterName(expression.Name);
 
-                _relationalCommandBuilder.AppendParameter(name, value, expression.Type, expression.Name);
+            if (_relationalCommandBuilder.ParameterBuilder.Parameters.All(p => p.InvariantName != expression.Name))
+            {
+                _relationalCommandBuilder.AddParameterByType(
+                    expression.Name,
+                    name,
+                    expression.Type);
             }
+
+            _relationalCommandBuilder.Append(name);
 
             return expression;
         }

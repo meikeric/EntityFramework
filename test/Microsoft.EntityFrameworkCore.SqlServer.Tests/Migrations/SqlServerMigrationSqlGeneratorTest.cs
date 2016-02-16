@@ -20,8 +20,8 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                 var typeMapper = new SqlServerTypeMapper();
 
                 return new SqlServerMigrationsSqlGenerator(
-                    new RelationalCommandBuilderFactory(
-                        new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+                    new RelationalCommandValueCacheBuilderFactory(
+                        new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                         new DiagnosticListener("Fake"),
                         typeMapper),
                     new SqlServerSqlGenerationHelper(),

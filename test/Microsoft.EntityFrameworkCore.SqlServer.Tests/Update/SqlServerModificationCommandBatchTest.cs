@@ -17,8 +17,8 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Tests.Update
         public void AddCommand_returns_false_when_max_batch_size_is_reached()
         {
             var batch = new SqlServerModificationCommandBatch(
-                new RelationalCommandBuilderFactory(
-                    new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+                new RelationalCommandValueCacheBuilderFactory(
+                    new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                     new DiagnosticListener("Fake"),
                     new SqlServerTypeMapper()),
                 new SqlServerSqlGenerationHelper(),

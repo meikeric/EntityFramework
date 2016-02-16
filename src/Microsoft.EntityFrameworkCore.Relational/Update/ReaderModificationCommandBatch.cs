@@ -17,12 +17,12 @@ namespace Microsoft.EntityFrameworkCore.Update
 {
     public abstract class ReaderModificationCommandBatch : ModificationCommandBatch
     {
-        private readonly IRelationalCommandBuilderFactory _commandBuilderFactory;
+        private readonly IRelationalCommandValueCacheBuilderFactory _commandBuilderFactory;
         private readonly IRelationalValueBufferFactoryFactory _valueBufferFactoryFactory;
         private readonly List<ModificationCommand> _modificationCommands = new List<ModificationCommand>();
 
         protected ReaderModificationCommandBatch(
-            [NotNull] IRelationalCommandBuilderFactory commandBuilderFactory,
+            [NotNull] IRelationalCommandValueCacheBuilderFactory commandBuilderFactory,
             [NotNull] ISqlGenerationHelper sqlGenerationHelper,
             [NotNull] IUpdateSqlGenerator updateSqlGenerator,
             [NotNull] IRelationalValueBufferFactoryFactory valueBufferFactoryFactory)
@@ -117,7 +117,7 @@ namespace Microsoft.EntityFrameworkCore.Update
             LastCachedCommandIndex = commandPosition;
         }
 
-        protected virtual IRelationalCommand CreateStoreCommand()
+        protected virtual IRelationalCommandValueCache CreateStoreCommand()
         {
             var commandBuilder = _commandBuilderFactory
                 .Create()
@@ -127,18 +127,20 @@ namespace Microsoft.EntityFrameworkCore.Update
             {
                 if (columnModification.ParameterName != null)
                 {
-                    commandBuilder.AddParameter(
+                    commandBuilder.AddParameterByProperty(
+                        columnModification.ParameterName,
                         SqlGenerationHelper.GenerateParameterName(columnModification.ParameterName),
-                        columnModification.Value,
-                        columnModification.Property);
+                        columnModification.Property,
+                        columnModification.Value);
                 }
 
                 if (columnModification.OriginalParameterName != null)
                 {
-                    commandBuilder.AddParameter(
+                    commandBuilder.AddParameterByProperty(
+                        columnModification.OriginalParameterName,
                         SqlGenerationHelper.GenerateParameterName(columnModification.OriginalParameterName),
-                        columnModification.OriginalValue,
-                        columnModification.Property);
+                        columnModification.Property,
+                        columnModification.OriginalValue);
                 }
             }
 

@@ -23,7 +23,7 @@ namespace Microsoft.EntityFrameworkCore.Update.Internal
         private int _commandsLeftToLengthCheck = 50;
 
         public SqlServerModificationCommandBatch(
-            [NotNull] IRelationalCommandBuilderFactory commandBuilderFactory,
+            [NotNull] IRelationalCommandValueCacheBuilderFactory commandBuilderFactory,
             [NotNull] ISqlGenerationHelper sqlGenerationHelper,
             // ReSharper disable once SuggestBaseTypeForParameter
             [NotNull] ISqlServerUpdateSqlGenerator updateSqlGenerator,

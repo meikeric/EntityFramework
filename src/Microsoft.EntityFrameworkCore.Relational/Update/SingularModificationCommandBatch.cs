@@ -9,7 +9,7 @@ namespace Microsoft.EntityFrameworkCore.Update
     public class SingularModificationCommandBatch : AffectedCountModificationCommandBatch
     {
         public SingularModificationCommandBatch(
-            [NotNull] IRelationalCommandBuilderFactory commandBuilderFactory,
+            [NotNull] IRelationalCommandValueCacheBuilderFactory commandBuilderFactory,
             [NotNull] ISqlGenerationHelper sqlGenerationHelper,
             [NotNull] IUpdateSqlGenerator updateSqlGenerator,
             [NotNull] IRelationalValueBufferFactoryFactory valueBufferFactoryFactory)

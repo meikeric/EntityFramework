@@ -21,8 +21,8 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                 var typeMapper = new SqliteTypeMapper();
 
                 return new SqliteMigrationsSqlGenerator(
-                    new RelationalCommandBuilderFactory(
-                        new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+                    new RelationalCommandValueCacheBuilderFactory(
+                        new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                         new DiagnosticListener("Fake"),
                         typeMapper),
                     new SqliteSqlGenerationHelper(),

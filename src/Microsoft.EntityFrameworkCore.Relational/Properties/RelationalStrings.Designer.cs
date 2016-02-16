@@ -349,6 +349,30 @@ namespace Microsoft.EntityFrameworkCore.Internal
         }
 
         /// <summary>
+        /// No value provided for requred parameter '{parameter}'.
+        /// </summary>
+        public static string MissingParameterValue([CanBeNull] object parameter)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("MissingParameterValue", "parameter"), parameter);
+        }
+
+        /// <summary>
+        /// Cannot use the value provided for parameter '{parameter}' because it doesn't derive from DbParameter.
+        /// </summary>
+        public static string ParameterNotDbParameter([CanBeNull] object parameter)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ParameterNotDbParameter", "parameter"), parameter);
+        }
+
+        /// <summary>
+        /// Cannot use the value provided for parameter '{parameter}' because it isn't assignable to type object[].
+        /// </summary>
+        public static string ParameterNotObjectArray([CanBeNull] object parameter)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ParameterNotObjectArray", "parameter"), parameter);
+        }
+
+        /// <summary>
         /// Executed DbCommand ({elapsed}ms) [Parameters=[{parameters}], CommandType='{commandType}', CommandTimeout='{commandTimeout}']{newLine}{commandText}
         /// </summary>
         public static string RelationalLoggerExecutedCommand([CanBeNull] object elapsed, [CanBeNull] object parameters, [CanBeNull] object commandType, [CanBeNull] object commandTimeout, [CanBeNull] object newLine, [CanBeNull] object commandText)

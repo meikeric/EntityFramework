@@ -11,12 +11,12 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
 {
     public class RelationalCommandListBuilder
     {
-        private readonly IRelationalCommandBuilderFactory _commandBuilderFactory;
-        private readonly List<IRelationalCommand> _commands = new List<IRelationalCommand>();
+        private readonly IRelationalCommandValueCacheBuilderFactory _commandBuilderFactory;
+        private readonly List<IRelationalCommandValueCache> _commands = new List<IRelationalCommandValueCache>();
 
-        private IRelationalCommandBuilder _commandBuilder;
+        private IRelationalCommandValueCacheBuilder _commandBuilder;
 
-        public RelationalCommandListBuilder([NotNull] IRelationalCommandBuilderFactory commandBuilderFactory)
+        public RelationalCommandListBuilder([NotNull] IRelationalCommandValueCacheBuilderFactory commandBuilderFactory)
         {
             Check.NotNull(commandBuilderFactory, nameof(commandBuilderFactory));
 
@@ -24,7 +24,7 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
             _commandBuilder = commandBuilderFactory.Create();
         }
 
-        public virtual IReadOnlyList<IRelationalCommand> GetCommands() => _commands;
+        public virtual IReadOnlyList<IRelationalCommandValueCache> GetCommands() => _commands;
 
         public virtual RelationalCommandListBuilder EndCommand()
         {

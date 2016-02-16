@@ -46,11 +46,11 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                 { typeof(SqlOperation), (g, o, m, b) => g.Generate((SqlOperation)o, m, b) }
             };
 
-        private readonly IRelationalCommandBuilderFactory _commandBuilderFactory;
+        private readonly IRelationalCommandValueCacheBuilderFactory _commandBuilderFactory;
         private readonly IRelationalAnnotationProvider _annotations;
 
         public MigrationsSqlGenerator(
-            [NotNull] IRelationalCommandBuilderFactory commandBuilderFactory,
+            [NotNull] IRelationalCommandValueCacheBuilderFactory commandBuilderFactory,
             [NotNull] ISqlGenerationHelper sqlGenerationHelper,
             [NotNull] IRelationalTypeMapper typeMapper,
             [NotNull] IRelationalAnnotationProvider annotations)
@@ -69,7 +69,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
         protected virtual ISqlGenerationHelper SqlGenerationHelper { get; }
         protected virtual IRelationalTypeMapper TypeMapper { get; }
 
-        public virtual IReadOnlyList<IRelationalCommand> Generate(
+        public virtual IReadOnlyList<IRelationalCommandValueCache> Generate(
             IReadOnlyList<MigrationOperation> operations,
             IModel model = null)
         {

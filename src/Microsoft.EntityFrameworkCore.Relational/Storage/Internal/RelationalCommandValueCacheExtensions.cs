@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Utilities;
 
 namespace Microsoft.EntityFrameworkCore.Storage.Internal
 {
-    public static class RelationalCommandExtensions
+    public static class RelationalCommandValueCacheExtensions
     {
         public static void ExecuteNonQuery(
-            [NotNull] this IEnumerable<IRelationalCommand> commands,
+            [NotNull] this IEnumerable<IRelationalCommandValueCache> commands,
             [NotNull] IRelationalConnection connection)
         {
             Check.NotNull(commands, nameof(commands));
@@ -36,7 +36,7 @@ namespace Microsoft.EntityFrameworkCore.Storage.Internal
         }
 
         public static async Task ExecuteNonQueryAsync(
-            [NotNull] this IEnumerable<IRelationalCommand> commands,
+            [NotNull] this IEnumerable<IRelationalCommandValueCache> commands,
             [NotNull] IRelationalConnection connection,
             CancellationToken cancellationToken = default(CancellationToken))
         {

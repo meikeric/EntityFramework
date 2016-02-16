@@ -353,7 +353,7 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
         {
             modificationCommandBatchFactory =
                 modificationCommandBatchFactory ?? new TestModificationCommandBatchFactory(
-                    Mock.Of<IRelationalCommandBuilderFactory>(),
+                    Mock.Of<IRelationalCommandValueCacheBuilderFactory>(),
                     Mock.Of<ISqlGenerationHelper>(),
                     Mock.Of<IUpdateSqlGenerator>(),
                     Mock.Of<IRelationalValueBufferFactoryFactory>());
@@ -499,13 +499,13 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
 
         private class TestModificationCommandBatchFactory : IModificationCommandBatchFactory
         {
-            private readonly IRelationalCommandBuilderFactory _commandBuilderFactory;
+            private readonly IRelationalCommandValueCacheBuilderFactory _commandBuilderFactory;
             private readonly ISqlGenerationHelper _sqlGenerationHelper;
             private readonly IUpdateSqlGenerator _updateSqlGenerator;
             private readonly IRelationalValueBufferFactoryFactory _valueBufferFactoryFactory;
 
             public TestModificationCommandBatchFactory(
-                IRelationalCommandBuilderFactory commandBuilderfactory,
+                IRelationalCommandValueCacheBuilderFactory commandBuilderfactory,
                 ISqlGenerationHelper sqlGenerationHelper,
                 IUpdateSqlGenerator updateSqlGenerator,
                 IRelationalValueBufferFactoryFactory valueBufferFactoryFactory)

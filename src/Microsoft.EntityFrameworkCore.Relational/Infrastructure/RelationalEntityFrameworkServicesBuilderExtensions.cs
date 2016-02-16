@@ -52,6 +52,7 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
                     .AddScoped<BatchExecutor>()
                     .AddScoped<MigrationsModelDiffer>()
                     .AddScoped<RelationalValueGeneratorSelector>()
+                    .AddScoped<IRelationalCommandValueCacheBuilderFactory, RelationalCommandValueCacheBuilderFactory>()
                     .AddScoped<IRelationalCommandBuilderFactory, RelationalCommandBuilderFactory>()
                     .AddScoped<IRawSqlCommandBuilder, RawSqlCommandBuilder>()
                     .AddScoped<CommandBatchPreparer>()

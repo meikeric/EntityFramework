@@ -20,8 +20,8 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Tests.Update
             optionsBuilder.UseSqlServer("Database=Crunchie").MaxBatchSize(1);
 
             var factory = new SqlServerModificationCommandBatchFactory(
-                new RelationalCommandBuilderFactory(
-                    new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+                new RelationalCommandValueCacheBuilderFactory(
+                    new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                     new DiagnosticListener("Fake"),
                     new SqlServerTypeMapper()),
                 new SqlServerSqlGenerationHelper(),
@@ -42,8 +42,8 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Tests.Update
             optionsBuilder.UseSqlServer("Database=Crunchie");
 
             var factory = new SqlServerModificationCommandBatchFactory(
-                new RelationalCommandBuilderFactory(
-                    new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+                new RelationalCommandValueCacheBuilderFactory(
+                    new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                     new DiagnosticListener("Fake"),
                     new SqlServerTypeMapper()),
                 new SqlServerSqlGenerationHelper(),

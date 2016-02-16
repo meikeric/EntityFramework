@@ -16,8 +16,8 @@ namespace Microsoft.EntityFrameworkCore.Storage
         public virtual void Builds_RelationalCommand_without_optional_parameters()
         {
             var builder = new RawSqlCommandBuilder(
-                new RelationalCommandBuilderFactory(
-                    new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+                new RelationalCommandValueCacheBuilderFactory(
+                    new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                     new DiagnosticListener("Fake"),
                     new FakeRelationalTypeMapper()),
                 new RelationalSqlGenerationHelper(),
@@ -33,8 +33,8 @@ namespace Microsoft.EntityFrameworkCore.Storage
         public virtual void Builds_RelationalCommand_with_empty_parameter_list()
         {
             var builder = new RawSqlCommandBuilder(
-                new RelationalCommandBuilderFactory(
-                    new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+                new RelationalCommandValueCacheBuilderFactory(
+                    new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                     new DiagnosticListener("Fake"),
                     new FakeRelationalTypeMapper()),
                 new RelationalSqlGenerationHelper(),
@@ -50,8 +50,8 @@ namespace Microsoft.EntityFrameworkCore.Storage
         public virtual void Builds_RelationalCommand_with_parameters()
         {
             var builder = new RawSqlCommandBuilder(
-                new RelationalCommandBuilderFactory(
-                    new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+                new RelationalCommandValueCacheBuilderFactory(
+                    new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                     new DiagnosticListener("Fake"),
                     new FakeRelationalTypeMapper()),
                 new RelationalSqlGenerationHelper(),

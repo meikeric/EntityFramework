@@ -93,8 +93,8 @@ Statement3
 
         private RelationalCommandListBuilder CreateBuilder()
             => new RelationalCommandListBuilder(
-                new RelationalCommandBuilderFactory(
-                    new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+                new RelationalCommandValueCacheBuilderFactory(
+                    new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                     new DiagnosticListener("Fake"),
                     new TestRelationalTypeMapper()));
 

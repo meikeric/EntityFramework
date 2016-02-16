@@ -21,7 +21,7 @@ namespace Microsoft.EntityFrameworkCore.Update
     public abstract class AffectedCountModificationCommandBatch : ReaderModificationCommandBatch
     {
         protected AffectedCountModificationCommandBatch(
-            [NotNull] IRelationalCommandBuilderFactory commandBuilderFactory,
+            [NotNull] IRelationalCommandValueCacheBuilderFactory commandBuilderFactory,
             [NotNull] ISqlGenerationHelper sqlGenerationHelper,
             [NotNull] IUpdateSqlGenerator updateSqlGenerator,
             [NotNull] IRelationalValueBufferFactoryFactory valueBufferFactoryFactory)

@@ -1,4 +1,4 @@
-// Copyright (c) .NET Foundation. All rights reserved.
+﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -79,90 +79,55 @@ namespace Microsoft.EntityFrameworkCore.Storage
         public static int GetLength([NotNull] this IRelationalCommandBuilder commandBuilder)
             => Check.NotNull(commandBuilder, nameof(commandBuilder)).Instance.Length;
 
-        public static IRelationalCommandBuilder AddParameter(
+        public static IRelationalCommandBuilder AddParameterByValue(
             [NotNull] this IRelationalCommandBuilder commandBuilder,
+            [NotNull] string invariantName,
             [NotNull] string name,
-            [CanBeNull] object value,
-            [CanBeNull] string invariantName)
+            [CanBeNull] object value)
         {
             Check.NotNull(commandBuilder, nameof(commandBuilder));
-            Check.NotEmpty(name, nameof(name));
 
-            commandBuilder.AddParameter(
-                name,
-                value,
-                t => t.GetMappingForValue(value),
-                value?.GetType().IsNullableType(),
-                invariantName);
+            commandBuilder.ParameterBuilder.AddParameterByValue(invariantName, name, value);
 
             return commandBuilder;
         }
 
-        public static IRelationalCommandBuilder AppendParameter(
+        public static IRelationalCommandBuilder AddParameterByType(
             [NotNull] this IRelationalCommandBuilder commandBuilder,
+            [NotNull] string invariantName,
             [NotNull] string name,
-            [CanBeNull] object value,
-            [NotNull] Type type,
-            [NotNull] string invariantName)
+            [NotNull] Type type)
         {
             Check.NotNull(commandBuilder, nameof(commandBuilder));
-            Check.NotEmpty(name, nameof(name));
-            Check.NotNull(type, nameof(type));
 
-            bool? isNullable = null;
-
-            if (type.IsNullableType())
-            {
-                isNullable = true;
-                type = type.UnwrapNullableType();
-            }
-
-            commandBuilder.AddParameter(
-                name,
-                value,
-                t => t.GetMapping(type),
-                isNullable,
-                invariantName);
-
-            commandBuilder.Instance.Append(name);
+            commandBuilder.ParameterBuilder.AddParameterByType(invariantName, name, type);
 
             return commandBuilder;
         }
 
-        public static IRelationalCommandBuilder AddParameter(
+        public static IRelationalCommandBuilder AddParameterByProperty(
             [NotNull] this IRelationalCommandBuilder commandBuilder,
+            [NotNull] string invariantName,
             [NotNull] string name,
-            [CanBeNull] object value,
             [NotNull] IProperty property)
         {
             Check.NotNull(commandBuilder, nameof(commandBuilder));
-            Check.NotEmpty(name, nameof(name));
-            Check.NotNull(property, nameof(property));
 
-            commandBuilder.AddParameter(
-                name,
-                value,
-                t => t.GetMapping(property),
-                property.IsNullable,
-                invariantName: null);
+            commandBuilder.ParameterBuilder.AddParameterByProperty(invariantName, name, property);
 
             return commandBuilder;
         }
 
-        private static void AddParameter(
+        public static IRelationalCommandBuilder AddCompositeParameter(
             [NotNull] this IRelationalCommandBuilder commandBuilder,
-            [NotNull] string name,
-            [CanBeNull] object value,
-            [NotNull] Func<IRelationalTypeMapper, RelationalTypeMapping> mapType,
-            bool? nullable,
-            [CanBeNull] string invariantName)
+            [NotNull] string invariantName,
+            [NotNull] Action<IRelationalParameterCollection> builderAction)
         {
-            Check.NotEmpty(name, nameof(name));
-            Check.NotNull(mapType, nameof(mapType));
+            Check.NotNull(commandBuilder, nameof(commandBuilder));
 
-            commandBuilder.AddParameter(
-                commandBuilder.CreateParameter(
-                    name, value, mapType, nullable, invariantName));
+            commandBuilder.ParameterBuilder.AddCompositeParameter(invariantName, builderAction);
+
+            return commandBuilder;
         }
     }
 }

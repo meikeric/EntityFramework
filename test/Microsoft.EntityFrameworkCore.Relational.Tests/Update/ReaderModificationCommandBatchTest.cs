@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.EntityFrameworkCore.TestUtilities.FakeProvider;
 using Microsoft.EntityFrameworkCore.Update;
 using Moq;
@@ -357,6 +358,8 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
             entry.MarkAsTemporary(property);
 
             var batch = new ModificationCommandBatchFake();
+            var parameterNameGenerator = new ParameterNameGenerator();
+
             batch.AddCommand(
                 new FakeModificationCommand(
                     "T",
@@ -369,7 +372,7 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
                             entry,
                             property,
                             property.TestProvider(),
-                            new ParameterNameGenerator(),
+                            parameterNameGenerator,
                             false, true, false, false)
                     }));
 
@@ -385,7 +388,7 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
                             entry,
                             property,
                             property.TestProvider(),
-                            new ParameterNameGenerator(),
+                            parameterNameGenerator,
                             false, true, false, false)
                     }));
 
@@ -558,7 +561,7 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
         {
             public ModificationCommandBatchFake(
                 IUpdateSqlGenerator sqlGenerator = null,
-                IRelationalCommandBuilderFactory factory = null)
+                IRelationalCommandValueCacheBuilderFactory factory = null)
                 : base(
                     factory ?? new FakeCommandBuilderFactory(),
                     new RelationalSqlGenerationHelper(),
@@ -587,7 +590,7 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
 
             public void UpdateCachedCommandTextBase(int commandIndex) => base.UpdateCachedCommandText(commandIndex);
 
-            public IRelationalCommand CreateStoreCommandBase() => CreateStoreCommand();
+            public IRelationalCommandValueCache CreateStoreCommandBase() => CreateStoreCommand();
         }
 
         private class FakeModificationCommand : ModificationCommand
@@ -606,7 +609,7 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
             public override IReadOnlyList<ColumnModification> ColumnModifications { get; }
         }
 
-        private class FakeCommandBuilderFactory : IRelationalCommandBuilderFactory
+        private class FakeCommandBuilderFactory : IRelationalCommandValueCacheBuilderFactory
         {
             private readonly DbDataReader _reader;
 
@@ -615,13 +618,17 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
                 _reader = reader;
             }
 
-            public IRelationalCommandBuilder Create() => new FakeCommandBuilder(_reader);
+            public IRelationalCommandValueCacheBuilder Create() => new FakeCommandBuilder(_reader);
+
+            public IRelationalCommandBuilder CreateDefinition()
+            {
+                throw new NotImplementedException();
+            }
         }
 
-        private class FakeCommandBuilder : IRelationalCommandBuilder
+        private class FakeCommandBuilder : IRelationalCommandValueCacheBuilder
         {
             private readonly DbDataReader _reader;
-            private readonly List<IRelationalParameter> _parameters = new List<IRelationalParameter>();
 
             public FakeCommandBuilder(DbDataReader reader = null)
             {
@@ -630,29 +637,30 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
 
             public IndentedStringBuilder Instance { get; } = new IndentedStringBuilder();
 
-            public void AddParameter(IRelationalParameter relationalParameter) => _parameters.Add(relationalParameter);
+            public IRelationalParameterValueCacheCollection ParameterBuilder { get; }
+                = new RelationalParameterValueCacheCollection(new FakeRelationalTypeMapper());
 
-            public IRelationalParameter CreateParameter(string name, object value, Func<IRelationalTypeMapper, RelationalTypeMapping> mapType, bool? nullable, string invariantName) 
-                => new RelationalParameter(name, value, new RelationalTypeMapping("name", typeof(Type)), null, invariantName);
-
-            public IRelationalCommand Build()
+            public IRelationalCommandValueCache Build()
                 => new FakeRelationalCommand(
                     Instance.ToString(),
-                    _parameters,
+                    ParameterBuilder.Parameters,
+                    ParameterBuilder.CachedParameterValues,
                     _reader);
         }
 
-        private class FakeRelationalCommand : IRelationalCommand
+        private class FakeRelationalCommand : IRelationalCommandValueCache
         {
             private readonly DbDataReader _reader;
 
             public FakeRelationalCommand(
                 string commandText,
                 IReadOnlyList<IRelationalParameter> parameters,
+                IReadOnlyDictionary<string, object> parameterValues,
                 DbDataReader reader)
             {
                 CommandText = commandText;
                 Parameters = parameters;
+                ParameterValues = parameterValues;
 
                 _reader = reader;
             }
@@ -660,6 +668,8 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
             public string CommandText { get; }
 
             public IReadOnlyList<IRelationalParameter> Parameters { get; }
+
+            public IReadOnlyDictionary<string, object> ParameterValues { get; }
 
             public int ExecuteNonQuery(IRelationalConnection connection, bool manageConnection = true)
             {
@@ -681,10 +691,10 @@ namespace Microsoft.EntityFrameworkCore.Tests.Update
                 throw new NotImplementedException();
             }
 
-            public RelationalDataReader ExecuteReader(IRelationalConnection connection, bool manageConnection = true, IReadOnlyDictionary<string, object> parameters = null)
+            public RelationalDataReader ExecuteReader(IRelationalConnection connection, bool manageConnection = true)
                 => new RelationalDataReader(null, new FakeDbCommand(), _reader);
 
-            public Task<RelationalDataReader> ExecuteReaderAsync(IRelationalConnection connection, bool manageConnection = true, IReadOnlyDictionary<string, object> parameters = null, CancellationToken cancellationToken = default(CancellationToken))
+            public Task<RelationalDataReader> ExecuteReaderAsync(IRelationalConnection connection, bool manageConnection = true, CancellationToken cancellationToken = default(CancellationToken))
                 => Task.FromResult(new RelationalDataReader(null, new FakeDbCommand(), _reader));
         }
 

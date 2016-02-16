@@ -117,8 +117,8 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                     annotationsProvider,
                     new SqliteMigrationsAnnotationProvider()),
                 new SqliteMigrationsSqlGenerator(
-                    new RelationalCommandBuilderFactory(
-                        new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+                    new RelationalCommandValueCacheBuilderFactory(
+                        new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                         new DiagnosticListener("Fake"),
                         typeMapper),
                     new SqliteSqlGenerationHelper(),

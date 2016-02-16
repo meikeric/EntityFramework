@@ -143,8 +143,8 @@ namespace Microsoft.EntityFrameworkCore.Migrations
             var sqlGenerator = new SqlServerSqlGenerationHelper();
             var typeMapper = new SqlServerTypeMapper();
 
-            var commandBuilderFactory = new RelationalCommandBuilderFactory(
-                new FakeSensitiveDataLogger<RelationalCommandBuilderFactory>(),
+            var commandBuilderFactory = new RelationalCommandValueCacheBuilderFactory(
+                new FakeSensitiveDataLogger<RelationalCommandValueCacheBuilderFactory>(),
                 new DiagnosticListener("Fake"),
                 typeMapper);
 

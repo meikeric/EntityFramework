@@ -9,13 +9,13 @@ namespace Microsoft.EntityFrameworkCore.Update.Internal
 {
     public class SqliteModificationCommandBatchFactory : IModificationCommandBatchFactory
     {
-        private readonly IRelationalCommandBuilderFactory _commandBuilderFactory;
+        private readonly IRelationalCommandValueCacheBuilderFactory _commandBuilderFactory;
         private readonly ISqlGenerationHelper _sqlGenerationHelper;
         private readonly IUpdateSqlGenerator _updateSqlGenerator;
         private readonly IRelationalValueBufferFactoryFactory _valueBufferFactoryFactory;
 
         public SqliteModificationCommandBatchFactory(
-            [NotNull] IRelationalCommandBuilderFactory commandBuilderFactory,
+            [NotNull] IRelationalCommandValueCacheBuilderFactory commandBuilderFactory,
             [NotNull] ISqlGenerationHelper sqlGenerationHelper,
             [NotNull] IUpdateSqlGenerator updateSqlGenerator,
             [NotNull] IRelationalValueBufferFactoryFactory valueBufferFactoryFactory)

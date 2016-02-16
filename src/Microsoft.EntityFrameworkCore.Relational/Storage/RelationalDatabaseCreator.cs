@@ -92,7 +92,7 @@ namespace Microsoft.EntityFrameworkCore.Storage
             }
         }
 
-        protected virtual IEnumerable<IRelationalCommand> GetCreateTablesCommands()
+        protected virtual IEnumerable<IRelationalCommandValueCache> GetCreateTablesCommands()
             => _migrationsSqlGenerator.Generate(_modelDiffer.GetDifferences(null, Model), Model);
 
         protected abstract bool HasTables();

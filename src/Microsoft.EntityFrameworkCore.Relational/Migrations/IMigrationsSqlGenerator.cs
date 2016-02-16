@@ -11,7 +11,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
 {
     public interface IMigrationsSqlGenerator
     {
-        IReadOnlyList<IRelationalCommand> Generate(
+        IReadOnlyList<IRelationalCommandValueCache> Generate(
             [NotNull] IReadOnlyList<MigrationOperation> operations,
             [CanBeNull] IModel model = null);
     }

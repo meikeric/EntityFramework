@@ -9,12 +9,12 @@ namespace Microsoft.EntityFrameworkCore.Storage.Internal
 {
     public class RawSqlCommandBuilder : IRawSqlCommandBuilder
     {
-        private readonly IRelationalCommandBuilderFactory _relationalCommandBuilderFactory;
+        private readonly IRelationalCommandValueCacheBuilderFactory _relationalCommandBuilderFactory;
         private readonly ISqlGenerationHelper _sqlGenerationHelper;
         private readonly IParameterNameGeneratorFactory _parameterNameGeneratorFactory;
 
         public RawSqlCommandBuilder(
-            [NotNull] IRelationalCommandBuilderFactory relationalCommandBuilderFactory,
+            [NotNull] IRelationalCommandValueCacheBuilderFactory relationalCommandBuilderFactory,
             [NotNull] ISqlGenerationHelper sqlGenerationHelper,
             [NotNull] IParameterNameGeneratorFactory parameterNameGeneratorFactory)
         {
@@ -27,7 +27,7 @@ namespace Microsoft.EntityFrameworkCore.Storage.Internal
             _parameterNameGeneratorFactory = parameterNameGeneratorFactory;
         }
 
-        public virtual IRelationalCommand Build(string sql, IReadOnlyList<object> parameters = null)
+        public virtual IRelationalCommandValueCache Build(string sql, IReadOnlyList<object> parameters = null)
         {
             Check.NotEmpty(sql, nameof(sql));
 
@@ -45,10 +45,10 @@ namespace Microsoft.EntityFrameworkCore.Storage.Internal
 
                     substitutions[i] = _sqlGenerationHelper.GenerateParameterName(parameterName);
 
-                    relationalCommandBuilder.AddParameter(
+                    relationalCommandBuilder.AddParameterByValue(
+                        parameterName,
                         substitutions[i],
-                        parameters[i],
-                        parameterName);
+                        parameters[i]);
                 }
 
                 // ReSharper disable once CoVariantArrayConversion

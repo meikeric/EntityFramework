@@ -64,11 +64,11 @@ namespace Microsoft.EntityFrameworkCore.Storage.Internal
         protected override async Task<bool> HasTablesAsync(CancellationToken cancellationToken = default(CancellationToken))
             => (int)await CreateHasTablesCommand().ExecuteScalarAsync(_connection, cancellationToken: cancellationToken) != 0;
 
-        private IRelationalCommand CreateHasTablesCommand()
+        private IRelationalCommandValueCache CreateHasTablesCommand()
             => _rawSqlCommandBuilder
                 .Build("IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE') SELECT 1 ELSE SELECT 0");
 
-        private IEnumerable<IRelationalCommand> CreateCreateOperations()
+        private IEnumerable<IRelationalCommandValueCache> CreateCreateOperations()
             => _migrationsSqlGenerator.Generate(new[] { new SqlServerCreateDatabaseOperation { Name = _connection.DbConnection.Database } });
 
         public override bool Exists()
@@ -181,7 +181,7 @@ namespace Microsoft.EntityFrameworkCore.Storage.Internal
             }
         }
 
-        private IEnumerable<IRelationalCommand> CreateDropCommands()
+        private IEnumerable<IRelationalCommandValueCache> CreateDropCommands()
         {
             var operations = new MigrationOperation[]
             {
